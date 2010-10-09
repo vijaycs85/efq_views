@@ -243,15 +243,14 @@ function efq_views_views_plugins() {
 /**
  * Implements hook_views_plugins_alter().
  *
- * This allos us to use the node view style with EntityFieldQuery: Node
+ * This allows us to use the node view style with EntityFieldQuery: Node
  * and comment view style with EntityFieldQuery: Comment
  * (just like with regular nodes and comments).
  *
- * Currently, this is a bit of a hack, because all entities are loaded twice
- * (the style plugin just takes the entity_ids and does the load again).
- * An alternative is to reimplement views_plugin_row_node_view and
- * views_plugin_row_comment_view ourselves (as well as their theme functions).
- * Not sure how usefull the whole thing really is.
+ * Note that these style plugins do an entity_load() even though they already
+ * get fully loaded entities from our query engine.
+ * However, entity_load has internal caching, so the only real overhead is an
+ * extra function call.
  */
 function efq_views_views_plugins_alter(&$plugins) {
   $plugins['row']['node']['base'][] = "efq_node";
