@@ -15,11 +15,11 @@ class efq_views_handler_argument_entity_numeric extends views_handler_argument_n
 
     if (count($this->value) > 1) {
       $operator = empty($this->options['not']) ? 'IN' : 'NOT IN';
-      $this->query->query->entityCondition($this->real_field, $this->value['value'], $operator);
+      $this->query->query->entityCondition($this->real_field, $this->value, $operator);
     }
     else {
       $operator = empty($this->options['not']) ? '=' : '!=';
-      $this->query->query->entityCondition($this->real_field, $this->value[0], $operator);
+      $this->query->query->entityCondition($this->real_field, $this->argument, $operator);
     }
   }
 }
