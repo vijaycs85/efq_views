@@ -19,7 +19,7 @@ class efq_views_handler_argument_entity_numeric extends views_handler_argument_n
     }
     else {
       $operator = empty($this->options['not']) ? '=' : '!=';
-      $this->query->query->entityCondition($this->real_field, $this->value['value'], $operator);
+      $this->query->query->entityCondition($this->real_field, $this->value[0], $operator);
     }
   }
 }
