@@ -217,9 +217,9 @@ function _efq_views_get_property_data() {
     'sort' => array(
       'handler' => 'efq_views_handler_sort_property',
     ),
-    //'argument' => array(
-    //  'handler' => 'efq_views_handler_argument_argument',
-    //),
+    'argument' => array(
+     'handler' => 'efq_views_handler_argument_property',
+    ),
   );
 
   return $data;
