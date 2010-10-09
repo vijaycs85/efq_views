@@ -173,12 +173,12 @@ function _efq_views_get_field_data($entity_type = NULL) {
           'handler' => 'efq_views_handler_field_field',
           'field_name' => $field_name,
         ),
-        //'argument' => array(
-        //  'field' => $column,
-        //  'handler' => $argument,
-        //  'field_name' => $field['field_name'],
-        //  'empty field name' => t('<No value>'),
-        //),
+        'argument' => array(
+         'field' => $column,
+         'handler' => $argument,
+         'field_name' => $field['field_name'],
+         'empty field name' => t('<No value>'),
+        ),
         'filter' => array(
           'field' => $column,
           'handler' => $filter,
