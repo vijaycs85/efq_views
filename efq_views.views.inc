@@ -57,9 +57,9 @@ function _efq_views_get_entity_data($exclude_type = FALSE) {
     'sort' => array(
       'handler' => 'efq_views_handler_sort_entity',
     ),
-    //'argument' => array(
-    //  'handler' => 'efq_views_handler_argument_entity_numeric',
-    //),
+    'argument' => array(
+     'handler' => 'efq_views_handler_argument_entity_numeric',
+    ),
   );
   $data['revision_id'] = array(
     'group' => t('Entity'),
@@ -74,9 +74,9 @@ function _efq_views_get_entity_data($exclude_type = FALSE) {
     'sort' => array(
       'handler' => 'efq_views_handler_sort_entity',
     ),
-    //'argument' => array(
-    //  'handler' => 'efq_views_handler_argument_entity_numeric',
-    //),
+    'argument' => array(
+     'handler' => 'efq_views_handler_argument_entity_numeric',
+    ),
   );
 
   if (!$exclude_type) {
@@ -93,9 +93,9 @@ function _efq_views_get_entity_data($exclude_type = FALSE) {
       'sort' => array(
         'handler' => 'efq_views_handler_sort_entity',
       ),
-      //'argument' => array(
-      //  'handler' => 'efq_views_handler_argument_entity_type',
-      //),
+      'argument' => array(
+       'handler' => 'efq_views_handler_argument_entity_type',
+      ),
     );
   }
 
