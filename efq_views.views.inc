@@ -112,9 +112,9 @@ function _efq_views_get_entity_data($exclude_type = FALSE) {
     'sort' => array(
       'handler' => 'efq_views_handler_sort_entity',
     ),
-    //'argument' => array(
-    //  'handler' => 'efq_views_handler_argument_entity_bundle',
-    //),
+    'argument' => array(
+     'handler' => 'efq_views_handler_argument_entity_bundle',
+    ),
   );
 
   return $data;
