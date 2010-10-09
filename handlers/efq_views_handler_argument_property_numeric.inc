@@ -36,7 +36,6 @@ class efq_views_handler_argument_property_numeric extends views_handler_argument
 
     if (count($this->value) > 1) {
       $operator = empty($this->options['not']) ? 'IN' : 'NOT IN';
-      $this->query->add_where(0, "$this->table_alias.$this->real_field", $this->value, $operator);
       $this->query->query->propertyCondition($this->options['column'], $this->value, $operator);
     }
     else {
