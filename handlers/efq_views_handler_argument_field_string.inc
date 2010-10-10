@@ -3,6 +3,7 @@
 
 /**
  * @todo
+ *   Add a description
  */
 class efq_views_handler_argument_field_string extends views_handler_argument_string {
   function options_form(&$form, &$form_state) {

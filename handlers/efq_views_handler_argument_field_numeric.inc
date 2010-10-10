@@ -3,6 +3,7 @@
 
 /**
  * @todo
+ *   Add a description
  */
 class efq_views_handler_argument_field_numeric extends views_handler_argument_numeric {
   function query() {

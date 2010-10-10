@@ -3,6 +3,7 @@
 
 /**
  * @todo
+ *   Add a description
  */
 class efq_views_handler_argument_property_numeric extends views_handler_argument_numeric {
   function option_definition() {
