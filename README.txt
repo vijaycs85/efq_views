@@ -1,8 +1,10 @@
 This module enables Views to use EntityFieldQuery as the query backend,
 allowing you to query fields stored in non-sql storage (such as mongodb).
 
-This backend will never support relationships, since EntityFieldQuery
-can't and won't support joins.
+This backend doesn't support relationships.
+EntityFieldQuery can't and won't support joins, which means
+that this functionality would have to be emulated in the query class
+(entity_load() on all related ids.)
 
 Note that EntityFieldQuery does not need an entity_type specified, it can
 query multiple entity types with the same field attached. This is reflected
@@ -19,9 +21,7 @@ Introduction article: http://vividintent.com/introducing-efq-views
 Errata
 ------
 1. EntityFieldQuery: Comment doesn't work.
-The comment entity type has "node_type" defined as the bundle column, but that
-column doesn't exist in the table {comment}, so when EntityFieldQuery tries to
-select it, an error is generated.
+Drupal core issue: http://drupal.org/node/938462.
 
 2. Filtering strings with STARTS_WITH and CONTAINS has been known to give me
 some odd results.
