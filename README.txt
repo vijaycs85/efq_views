@@ -20,8 +20,10 @@ Introduction article: http://vividintent.com/introducing-efq-views
 
 Errata
 ------
-1. EntityFieldQuery: Comment doesn't work.
-Drupal core issue: http://drupal.org/node/938462.
+1. Entity: Bundle (field/filter/sort) is not supported for
+"EntityFieldQuery: Comment" and "EntityFieldQuery: Taxonomy term".
+For taxonomy terms, the "vid" property can be used instead.
+This is a Drupal 7 limitation: http://drupal.org/node/938462.
 
 2. Filtering strings with STARTS_WITH and CONTAINS has been known to give me
 some odd results.

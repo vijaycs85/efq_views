@@ -18,6 +18,11 @@ function efq_views_views_data() {
     $data['efq_' . $type] += _efq_views_get_entity_data(true);
     $data['efq_' . $type] += _efq_views_get_field_data();
     $data['efq_' . $type] += _efq_views_get_property_data();
+
+    // Entity: Bundle is not supported for these two entity types.
+    if ($type == 'comment' || $type == 'taxonomy_term') {
+      unset($data['efq_' . $type]['bundle']);
+    }
   }
 
   // Now add the EFQ: Multiple base table, for querying across
