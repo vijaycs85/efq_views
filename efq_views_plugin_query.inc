@@ -77,7 +77,7 @@ class efq_views_plugin_query extends views_plugin_query {
         if (!empty($this->pager->options['offset'])) {
           $this->pager->total_items -= $this->pager->options['offset'];
         }
-  
+
         $this->pager->update_page_info();
       }
       catch (Exception $e) {
@@ -87,7 +87,7 @@ class efq_views_plugin_query extends views_plugin_query {
           drupal_set_message($e->getMessage(), 'error');
         }
         else {
-          drupal_set_message(t('An error occured while assembling the requested view.'), 'error');
+          drupal_set_message(t('An error occured while generating the requested view.'), 'error');
         }
         return;
       }
