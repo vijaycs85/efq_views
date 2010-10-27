@@ -140,6 +140,21 @@ function _efq_views_get_field_data($entity_type = NULL) {
     }
     $field_name = $field['field_name'];
 
+    // This provides a Views field.
+    // Arguments/filters/sorts are provided per column, so there are none here.
+    $data[$field_name] = array(
+      'group' => t('Fields'),
+      'title' => $field_name,
+      'title short' => $field_name,
+      'help' =>  t('Appears in: @bundles', array('@bundles' => implode(', ', $bundles_names))),
+      'field' => array(
+        'field' => $field_name,
+        'click sortable' => FALSE,
+        'handler' => 'efq_views_handler_field_field',
+        'field_name' => $field_name,
+      ),
+    );
+
     foreach ($field['columns'] as $column => $attributes) {
       $allow_sort = TRUE;
 
@@ -172,12 +187,6 @@ function _efq_views_get_field_data($entity_type = NULL) {
         'title' => t('!name - !column', array('!name' => $field['field_name'], '!column' => $column)),
         'title short' => $field_name,
         'help' =>  t('Appears in: @bundles', array('@bundles' => implode(', ', $bundles_names))),
-        'field' => array(
-          'field' => $column,
-          'click sortable' => FALSE,
-          'handler' => 'efq_views_handler_field_field',
-          'field_name' => $field_name,
-        ),
         'argument' => array(
          'field' => $column,
          'handler' => $argument,
