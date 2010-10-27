@@ -128,7 +128,9 @@ function _efq_views_get_entity_data($exclude_type = FALSE) {
 /**
  * Helper for efq_views_views_data()
  * Returns defined fields & their columns for the given entity type
- * (or, if absent, all entity types)
+ * (or, if absent, all entity types).
+ *
+ * Based on field_views_field_default_views_data() from field.views.inc
  */
 function _efq_views_get_field_data($entity_type = NULL) {
   foreach (field_info_fields($entity_type) as $field) {
@@ -148,7 +150,6 @@ function _efq_views_get_field_data($entity_type = NULL) {
       'title short' => $field_name,
       'help' =>  t('Appears in: @bundles', array('@bundles' => implode(', ', $bundles_names))),
       'field' => array(
-        'field' => $field_name,
         'click sortable' => FALSE,
         'handler' => 'efq_views_handler_field_field',
         'field_name' => $field_name,
