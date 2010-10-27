@@ -71,13 +71,26 @@ class efq_views_plugin_query extends views_plugin_query {
 
     // if we are using the pager, calculate the total number of results
     if ($this->pager->use_pager()) {
-      $this->pager->total_items = $count_query->execute();
+      try {
+        $this->pager->total_items = $count_query->execute();
 
-      if (!empty($this->pager->options['offset'])) {
-        $this->pager->total_items -= $this->pager->options['offset'];
+        if (!empty($this->pager->options['offset'])) {
+          $this->pager->total_items -= $this->pager->options['offset'];
+        }
+  
+        $this->pager->update_page_info();
       }
-
-      $this->pager->update_page_info();
+      catch (Exception $e) {
+        // Show the full exception message in Views admin.
+        // However, don't show that to the user on the frontend.
+        if (!empty($view->live_preview)) {
+          drupal_set_message($e->getMessage(), 'error');
+        }
+        else {
+          drupal_set_message(t('An error occured while assembling the requested view.'), 'error');
+        }
+        return;
+      }
     }
 
     // Let the pager set limit and offset.
@@ -110,7 +123,15 @@ class efq_views_plugin_query extends views_plugin_query {
       }
     }
     catch (Exception $e) {
-      debug('Exception: ' . $e->getMessage());
+      // Show the full exception message in Views admin.
+      // However, don't show that to the user on the frontend.
+      if (!empty($view->live_preview)) {
+        drupal_set_message($e->getMessage(), 'error');
+      }
+      else {
+        drupal_set_message(t('An error occured while generating the requested view.'), 'error');
+      }
+      return;
     }
 
     $view->execute_time = microtime(true) - $start;
