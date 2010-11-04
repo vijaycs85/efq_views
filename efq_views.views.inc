@@ -181,12 +181,21 @@ function _efq_views_get_field_data($entity_type = NULL) {
           break;
       }
 
+      if (count($field['columns']) == 1) {
+        $title = t('@label (!name)', array('@label' => $field_name, '!name' => $field_name));
+        $title_short = $field_name;
+      }
+      else {
+        $title = t('@label (!name) - !column', array('@label' => $field_name, '!name' => $field_name, '!column' => $column));
+        $title_short = t('@label-truncated - !column', array('@label-truncated' => $field_name, '!column' => $column));
+      }
+
       // $data[$field_name][$column] doesn't work because $field_name is not a base table
       // hence, this ugly thing.
       $data[$field_name . '-' . $column] = array(
         'group' => t('Fields'),
-        'title' => t('!name - !column', array('!name' => $field['field_name'], '!column' => $column)),
-        'title short' => $field_name,
+        'title' => $title,
+        'title short' => $title_short,
         'help' =>  t('Appears in: @bundles', array('@bundles' => implode(', ', $bundles_names))),
         'argument' => array(
          'field' => $column,
