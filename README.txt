@@ -20,7 +20,3 @@ This is a Drupal 7 limitation: http://drupal.org/node/938462.
 EntityFieldQuery can't and won't support joins, which means
 that this functionality would have to be emulated in the query class
 (entity_load() on all related ids.)
-
-3. The BETWEEN operator in the property filter uses one field for it's value,
-instead of two (min and max) because dependent forms are currently broken in Views,
-see http://drupal.org/node/667950.

@@ -13,7 +13,15 @@ class efq_views_handler_filter_property extends views_handler_filter {
   }
 
   function admin_summary() {
-    return check_plain($this->value['column'] . ' ' . $this->operator . ' ' . $this->value['value']);
+    $output = check_plain($this->value['column'] . ' ' . $this->operator);
+    if (in_array($this->operator, $this->operator_values(2))) {
+      $output .= ' ' . t('@min and @max', array('@min' => $this->value['min'], '@max' => $this->value['max']));
+    }
+    elseif (in_array($this->operator, $this->operator_values(1))) {
+      $output .= ' ' . check_plain($this->value['value']);
+    }
+
+    return $output;
   }
 
   /**
@@ -105,6 +113,9 @@ class efq_views_handler_filter_property extends views_handler_filter {
    * Provide a simple textfield for equality
    */
   function value_form(&$form, &$form_state) {
+    // Need to load dependent manually until http://drupal.org/node/667950 lands.
+    ctools_include('dependent');
+
     $form['value']['column'] = array(
       '#type' => 'textfield',
       '#title' => t('Property column'),
@@ -117,7 +128,24 @@ class efq_views_handler_filter_property extends views_handler_filter {
       '#title' => t('Value'),
       '#size' => 30,
       '#default_value' => $this->value['value'],
-      '#description' => t('Value of the column, compared using the selected operater. If using BETWEEN, separate the first and last value with a comma.'),
+      '#process' => array('ctools_dependent_process'),
+      '#dependency' => array('radio:options[operator]' => array_map('htmlentities', $this->operator_values(1))),
+    );
+    $form['value']['min'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Min'),
+      '#size' => 30,
+      '#default_value' => $this->value['min'],
+      '#process' => array('ctools_dependent_process'),
+      '#dependency' => array('radio:options[operator]' => array_map('htmlentities', $this->operator_values(2))),
+    );
+    $form['value']['max'] = array(
+      '#type' => 'textfield',
+      '#title' => t('And max'),
+      '#size' => 30,
+      '#default_value' => $this->value['max'],
+      '#process' => array('ctools_dependent_process'),
+      '#dependency' => array('radio:options[operator]' => array_map('htmlentities', $this->operator_values(2))),
     );
   }
 
@@ -137,8 +165,7 @@ class efq_views_handler_filter_property extends views_handler_filter {
   }
 
   function op_between() {
-    $ranges = array_map('trim', explode(',', $this->value['value']));
-    $this->query->query->propertyCondition($this->value['column'], $ranges, "BETWEEN");
+    $this->query->query->propertyCondition($this->value['column'], array($this->value['min'], $this->value['max']), "BETWEEN");
   }
 
   function op_contains() {
