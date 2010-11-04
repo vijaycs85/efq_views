@@ -58,6 +58,24 @@ class efq_views_handler_filter_field_numeric extends views_handler_filter_numeri
     return $operators;
   }
 
+  function option_definition() {
+    $options = parent::option_definition();
+    $options['delta'] = array('default' => NULL);
+
+    return $options;
+  }
+
+  function options_form(&$form, &$form_state) {
+    parent::options_form($form, $form_state);
+
+    $form['delta'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Delta'),
+      '#default_value' => $this->options['delta'],
+      '#description' => t('Numeric delta group identifier. If provided, only values attached to the same delta are matched. Leave empty to match all values.'),
+    );
+  }
+
   function query() {
     $info = $this->operators();
     if (!empty($info[$this->operator]['method'])) {
@@ -66,11 +84,13 @@ class efq_views_handler_filter_field_numeric extends views_handler_filter_numeri
   }
 
   function op_simple($column) {
-    $this->query->query->fieldCondition($this->definition['field_name'], $column, $this->value['value'], $this->operator);
+    $delta = is_numeric($this->options['delta']) ? $this->options['delta'] : NULL;
+    $this->query->query->fieldCondition($this->definition['field_name'], $column, $this->value['value'], $this->operator, $delta);
   }
 
   function op_between($column) {
-    $this->query->query->fieldCondition($this->definition['field_name'], $column, array($this->value['min'], $this->value['max']), "BETWEEN");
+    $delta = is_numeric($this->options['delta']) ? $this->options['delta'] : NULL;
+    $this->query->query->fieldCondition($this->definition['field_name'], $column, array($this->value['min'], $this->value['max']), "BETWEEN", $delta);
   }
 
   /**

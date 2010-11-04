@@ -40,10 +40,28 @@ class efq_views_handler_filter_field_string extends views_handler_filter_string 
     return $operators;
   }
 
+  function option_definition() {
+    $options = parent::option_definition();
+
+    // We don't care about case sensitivity.
+    unset($options['case']);
+
+    $options['delta'] = array('default' => NULL);
+
+    return $options;
+  }
+
   function options_form(&$form, &$form_state) {
     parent::options_form($form, $form_state);
     // We don't care about case sensitivity.
     unset($form['case']);
+
+    $form['delta'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Delta'),
+      '#default_value' => $this->options['delta'],
+      '#description' => t('Numeric delta group identifier. If provided, only values attached to the same delta are matched. Leave empty to match all values.'),
+    );
   }
 
   function query() {
@@ -54,15 +72,18 @@ class efq_views_handler_filter_field_string extends views_handler_filter_string 
   }
 
   function op_equal($column) {
-    $this->query->query->fieldCondition($this->definition['field_name'], $column, $this->value['value'], $this->operator);
+    $delta = is_numeric($this->options['delta']) ? $this->options['delta'] : NULL;
+    $this->query->query->fieldCondition($this->definition['field_name'], $column, $this->value['value'], $this->operator, $delta);
   }
 
   function op_contains($column) {
-    $this->query->query->fieldCondition($this->definition['field_name'], $column, $this->value['value'], "CONTAINS");
+    $delta = is_numeric($this->options['delta']) ? $this->options['delta'] : NULL;
+    $this->query->query->fieldCondition($this->definition['field_name'], $column, $this->value['value'], "CONTAINS", $delta);
   }
 
   function op_starts($column) {
-    $this->query->query->fieldCondition($this->definition['field_name'], $column, $this->value['value'], "STARTS_WITH");
+    $delta = is_numeric($this->options['delta']) ? $this->options['delta'] : NULL;
+    $this->query->query->fieldCondition($this->definition['field_name'], $column, $this->value['value'], "STARTS_WITH", $delta);
   }
 
   /**
