@@ -2,8 +2,7 @@
 // $Id$
 
 /**
- * @todo
- *   Add a description
+ * Argument handler for entity bundles.
  */
 class efq_views_handler_argument_entity_bundle extends views_handler_argument_string {
   function query() {

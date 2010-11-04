@@ -2,8 +2,7 @@
 // $Id$
 
 /**
- * @todo
- *   Add a description
+ * Argument handler for entity properties.
  */
 class efq_views_handler_argument_property extends views_handler_argument {
   function option_definition() {
