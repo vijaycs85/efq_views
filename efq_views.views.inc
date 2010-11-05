@@ -54,6 +54,7 @@ function _efq_views_get_entity_data($exclude_type = FALSE) {
     'title' => t('Entity ID'),
     'help' => t('The entity ID of the entity.'),
     'field' => array(
+      'click sortable' => TRUE,
       'handler' => 'efq_views_handler_field_entity_numeric',
     ),
     'filter' => array(
@@ -71,6 +72,7 @@ function _efq_views_get_entity_data($exclude_type = FALSE) {
     'title' => t('Revision ID'),
     'help' => t('The revision ID of the entity revision.'),
     'field' => array(
+      'click sortable' => TRUE,
       'handler' => 'efq_views_handler_field_entity_numeric',
     ),
     'filter' => array(
@@ -90,6 +92,7 @@ function _efq_views_get_entity_data($exclude_type = FALSE) {
       'title' => t('Entity Type'),
       'help' => t('The type of an entity (for example, "node", "comment", etc)..'),
       'field' => array(
+        'click sortable' => TRUE,
         'handler' => 'efq_views_handler_field_entity',
       ),
       'filter' => array(
@@ -109,6 +112,7 @@ function _efq_views_get_entity_data($exclude_type = FALSE) {
     'title' => t('Bundle'),
     'help' => t('The entity bundle (for example, "article", "page", etc for nodes).'),
     'field' => array(
+      'click sortable' => TRUE,
       'handler' => 'efq_views_handler_field_entity',
     ),
     'filter' => array(
@@ -233,6 +237,7 @@ function _efq_views_get_property_data() {
     'title' => t('Property'),
     'help' => t('Entity-specific property.'),
     'field' => array(
+      'click sortable' => TRUE,
       'handler' => 'efq_views_handler_field_property',
     ),
     'filter' => array(
