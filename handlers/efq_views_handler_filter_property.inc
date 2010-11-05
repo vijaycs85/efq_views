@@ -13,6 +13,11 @@ class efq_views_handler_filter_property extends views_handler_filter {
   }
 
   function admin_summary() {
+    // Avoid generating notices if the field hasn't been set up yet.
+    if (!is_array($this->value)) {
+      return '';
+    }
+
     $output = check_plain($this->value['column'] . ' ' . $this->operator);
     if (in_array($this->operator, $this->operator_values(2))) {
       $output .= ' ' . t('@min and @max', array('@min' => $this->value['min'], '@max' => $this->value['max']));
@@ -113,9 +118,6 @@ class efq_views_handler_filter_property extends views_handler_filter {
    * Provide a simple textfield for equality
    */
   function value_form(&$form, &$form_state) {
-    // Need to load dependent manually until http://drupal.org/node/667950 lands.
-    ctools_include('dependent');
-
     $form['value']['column'] = array(
       '#type' => 'textfield',
       '#title' => t('Property column'),
