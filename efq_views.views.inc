@@ -17,7 +17,7 @@ function efq_views_views_data() {
     );
     $data['efq_' . $type] += _efq_views_get_entity_data(true);
     $data['efq_' . $type] += _efq_views_get_field_data();
-    $data['efq_' . $type] += _efq_views_get_property_data();
+    $data['efq_' . $type] += _efq_views_get_property_data($info);
 
     // Entity: Bundle is not supported for these two entity types.
     if ($type == 'comment' || $type == 'taxonomy_term') {
@@ -231,7 +231,7 @@ function _efq_views_get_field_data($entity_type = NULL) {
  * Helper for efq_views_views_data()
  * Returns the property data.
  */
-function _efq_views_get_property_data() {
+function _efq_views_get_property_data($info = NULL) {
   $data['property'] = array(
     'group' => t('Property'),
     'title' => t('Property'),
@@ -250,6 +250,21 @@ function _efq_views_get_property_data() {
      'handler' => 'efq_views_handler_argument_property',
     ),
   );
+
+  // No single entity_type specified, we can't find more info
+  // through the entity definition. So, return what we have so far.
+  if (!isset($info)) {
+    return $data;
+  }
+
+  // Provide additional help.
+  if (isset($info['schema_fields_sql']['base table'])) {
+    $available_properties = $info['schema_fields_sql']['base table'];
+    $data['property']['field']['available_properties'] = $available_properties;
+    $data['property']['filter']['available_properties'] = $available_properties;
+    $data['property']['sort']['available_properties'] = $available_properties;
+    $data['property']['argument']['available_properties'] = $available_properties;
+  }
 
   return $data;
 }

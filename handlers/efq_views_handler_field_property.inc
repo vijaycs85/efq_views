@@ -23,6 +23,12 @@ class efq_views_handler_field_property extends views_handler_field {
       '#description' => t('Name of the database column.'),
       '#weight' => -1,
     );
+
+    // We know which properties are available, so we can show a select box.
+    if (isset($this->definition['available_properties'])) {
+      $form['column']['#type'] = 'select';
+      $form['column']['#options'] = array_combine($this->definition['available_properties'], $this->definition['available_properties']);
+    }
   }
 
   /**

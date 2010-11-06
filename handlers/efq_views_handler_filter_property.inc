@@ -125,6 +125,12 @@ class efq_views_handler_filter_property extends views_handler_filter {
       '#description' => t('Name of the database column to use in the comparison.'),
     );
 
+    // We know which properties are available, so we can show a select box.
+    if (isset($this->definition['available_properties'])) {
+      $form['value']['column']['#type'] = 'select';
+      $form['value']['column']['#options'] = array_combine($this->definition['available_properties'], $this->definition['available_properties']);
+    }
+
     $form['value']['value'] = array(
       '#type' => 'textfield',
       '#title' => t('Value'),

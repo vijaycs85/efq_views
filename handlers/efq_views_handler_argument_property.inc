@@ -13,13 +13,20 @@ class efq_views_handler_argument_property extends views_handler_argument {
   }
 
   function options_form(&$form, &$form_state) {
-    parent::options_form($form, $form_state);
     $form['column'] = array(
       '#type' => 'textfield',
       '#title' => t('Property column'),
       '#default_value' => $this->options['column'],
       '#description' => t('Name of the database column to use in the comparison.'),
     );
+
+    // We know which properties are available, so we can show a select box.
+    if (isset($this->definition['available_properties'])) {
+      $form['column']['#type'] = 'select';
+      $form['column']['#options'] = array_combine($this->definition['available_properties'], $this->definition['available_properties']);
+    }
+
+    parent::options_form($form, $form_state);
   }
 
   function query() {
