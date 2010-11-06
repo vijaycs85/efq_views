@@ -21,4 +21,4 @@ EntityFieldQuery can't and won't support joins, which means
 that this functionality would have to be emulated in the query class
 (entity_load() on all related ids.)
 
-3. Click sorting (table headers) doesn't work for fields.
+3. Click sorting (table headers) doesn't work for fields or entity labels.

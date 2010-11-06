@@ -126,6 +126,18 @@ function _efq_views_get_entity_data($exclude_type = FALSE) {
     ),
   );
 
+  // Can't click sort, or use arguments/filters/sorts because the label
+  // might be generated in a callback, and not retrieved from the database.
+  $data['label'] = array(
+    'group' => t('Entity'),
+    'title' => t('Label'),
+    'help' => t('The entity label (for example, node title for nodes).'),
+    'field' => array(
+      'click sortable' => FALSE,
+      'handler' => 'efq_views_handler_field_entity_label',
+    ),
+  );
+
   return $data;
 }
 
