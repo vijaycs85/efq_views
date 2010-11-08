@@ -15,7 +15,13 @@ class efq_views_handler_field_field extends views_handler_field_field {
    * so that we don't have to reinvent it.
    */
   function pre_render(&$values) {
+    $this->field_alias = $this->field;
+
     foreach ($values as $id => $entity) {
+      if (!isset($entity->{$this->field_alias})) {
+        continue;
+      }
+      
       $values[$id]->_field_cache[$this->field_alias] = array(
             'entity_type' => $entity->entity_type,
             'object' => $entity,
