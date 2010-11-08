@@ -197,7 +197,7 @@ function _efq_views_get_field_data($entity_type = NULL) {
           break;
       }
 
-      if (count($field['columns']) == 1) {
+      if (count($field['columns']) == 1 && $column == 'value') {
         $title = t('@label (!name)', array('@label' => $field_name, '!name' => $field_name));
         $title_short = $field_name;
       }
