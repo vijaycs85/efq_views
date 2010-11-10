@@ -48,15 +48,15 @@ class efq_views_handler_filter_property_string extends views_handler_filter_stri
   }
 
   function op_equal($column) {
-    $this->query->query->propertyCondition($column, $this->value['value'], $this->operator);
+    $this->query->query->propertyCondition($column, $this->value, $this->operator);
   }
 
   function op_contains($column) {
-    $this->query->query->propertyCondition($column, $this->value['value'], "CONTAINS");
+    $this->query->query->propertyCondition($column, $this->value, "CONTAINS");
   }
 
   function op_starts($column) {
-    $this->query->query->propertyCondition($column, $this->value['value'], "STARTS_WITH");
+    $this->query->query->propertyCondition($column, $this->value, "STARTS_WITH");
   }
 
   /**

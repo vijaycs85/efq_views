@@ -73,17 +73,17 @@ class efq_views_handler_filter_field_string extends views_handler_filter_string 
 
   function op_equal($column) {
     $delta = is_numeric($this->options['delta']) ? $this->options['delta'] : NULL;
-    $this->query->query->fieldCondition($this->definition['field_name'], $column, $this->value['value'], $this->operator, $delta);
+    $this->query->query->fieldCondition($this->definition['field_name'], $column, $this->value, $this->operator, $delta);
   }
 
   function op_contains($column) {
     $delta = is_numeric($this->options['delta']) ? $this->options['delta'] : NULL;
-    $this->query->query->fieldCondition($this->definition['field_name'], $column, $this->value['value'], "CONTAINS", $delta);
+    $this->query->query->fieldCondition($this->definition['field_name'], $column, $this->value, "CONTAINS", $delta);
   }
 
   function op_starts($column) {
     $delta = is_numeric($this->options['delta']) ? $this->options['delta'] : NULL;
-    $this->query->query->fieldCondition($this->definition['field_name'], $column, $this->value['value'], "STARTS_WITH", $delta);
+    $this->query->query->fieldCondition($this->definition['field_name'], $column, $this->value, "STARTS_WITH", $delta);
   }
 
   /**
