@@ -40,6 +40,12 @@ class efq_views_handler_filter_property_string extends views_handler_filter_stri
     return $operators;
   }
 
+  function options_form(&$form, &$form_state) {
+    parent::options_form($form, $form_state);
+    // We don't care about case sensitivity.
+    unset($form['case']);
+  }
+
   function query() {
     $info = $this->operators();
     if (!empty($info[$this->operator]['method'])) {
