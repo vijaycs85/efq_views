@@ -16,9 +16,12 @@ files[] = handlers/efq_views_handler_field_entity.inc
 files[] = handlers/efq_views_handler_field_entity_label.inc
 files[] = handlers/efq_views_handler_field_entity_numeric.inc
 files[] = handlers/efq_views_handler_filter_entity_numeric.inc
+files[] = handlers/efq_views_handler_filter_entity_label.inc
 files[] = handlers/efq_views_handler_filter_entity_in_operator.inc
 files[] = handlers/efq_views_handler_sort_entity.inc
+files[] = handlers/efq_views_handler_sort_entity_label.inc
 files[] = handlers/efq_views_handler_argument_entity_numeric.inc
+files[] = handlers/efq_views_handler_argument_entity_label.inc
 
 files[] = handlers/efq_views_handler_argument_entity_type.inc
 files[] = handlers/efq_views_handler_filter_entity_type.inc

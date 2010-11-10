@@ -136,11 +136,26 @@ function _efq_views_get_entity_data($info = NULL, $exclude_type = FALSE) {
       'handler' => 'efq_views_handler_field_entity_label',
     ),
   );
-  // We can only do click sort when the label is stored in the database, instead
-  // of being generated in a callback.
+  // We can only do click sorting and filters/sorts/arguments when the label is
+  // stored in the database, instead of being generated in a callback.
   if (isset($info['entity keys']['label']) && !isset($info['label callback'])) {
-    $data['label']['field']['click sortable'] = TRUE;
-    $data['label']['field']['label column'] = $info['entity keys']['label'];
+    $data['label']['field'] = array(
+      'click sortable' => TRUE,
+      'handler' => 'efq_views_handler_field_entity_label',
+      'label column' => $info['entity keys']['label'],
+    );
+    $data['label']['filter'] = array(
+      'handler' => 'efq_views_handler_filter_entity_label',
+      'label column' => $info['entity keys']['label'],
+    );
+    $data['label']['sort'] = array(
+      'handler' => 'efq_views_handler_sort_entity_label',
+      'label column' => $info['entity keys']['label'],
+    );
+    $data['label']['argument'] = array(
+      'handler' => 'efq_views_handler_argument_entity_label',
+      'label column' => $info['entity keys']['label'],
+    );
   }
 
   return $data;
