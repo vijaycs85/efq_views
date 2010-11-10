@@ -10,6 +10,7 @@ class efq_views_handler_argument_field_string extends views_handler_argument_str
     // We don't support glossary currently.
     unset($form['glossary']);
   }
+  
   function query() {
     $argument = $this->argument;
     if (!empty($this->options['transform_dash'])) {

@@ -15,7 +15,7 @@ function efq_views_views_data() {
       'query class' => 'efq_query',
       'field' => $info['entity keys']['id'],
     );
-    $data['efq_' . $type] += _efq_views_get_entity_data(true);
+    $data['efq_' . $type] += _efq_views_get_entity_data($info, true);
     $data['efq_' . $type] += _efq_views_get_field_data();
     $data['efq_' . $type] += _efq_views_get_property_data($info);
 
@@ -45,10 +45,11 @@ function efq_views_views_data() {
  * Returns all possible entity metadata variants
  * (entity_id, revision_id, entity_type, bundle).
  *
+ * @param $info Entity info array.
  * @param boolean $exclude_type Whether to exclude entity_type (in cases when
  *                              it's already specified through the base table)
  */
-function _efq_views_get_entity_data($exclude_type = FALSE) {
+function _efq_views_get_entity_data($info = NULL, $exclude_type = FALSE) {
   $data['entity_id'] = array(
     'group' => t('Entity'),
     'title' => t('Entity ID'),
@@ -126,8 +127,6 @@ function _efq_views_get_entity_data($exclude_type = FALSE) {
     ),
   );
 
-  // Can't click sort, or use arguments/filters/sorts because the label
-  // might be generated in a callback, and not retrieved from the database.
   $data['label'] = array(
     'group' => t('Entity'),
     'title' => t('Label'),
@@ -137,6 +136,12 @@ function _efq_views_get_entity_data($exclude_type = FALSE) {
       'handler' => 'efq_views_handler_field_entity_label',
     ),
   );
+  // We can only do click sort when the label is stored in the database, instead
+  // of being generated in a callback.
+  if (isset($info['entity keys']['label']) && !isset($info['label callback'])) {
+    $data['label']['field']['click sortable'] = TRUE;
+    $data['label']['field']['label column'] = $info['entity keys']['label'];
+  }
 
   return $data;
 }
@@ -242,6 +247,8 @@ function _efq_views_get_field_data($entity_type = NULL) {
 /**
  * Helper for efq_views_views_data()
  * Returns the property data.
+ *
+ * @param $info Entity info array.
  */
 function _efq_views_get_property_data($info = NULL) {
   $data['property'] = array(
