@@ -17,7 +17,7 @@ function efq_views_views_data() {
     );
     $data['efq_' . $type] += _efq_views_get_entity_data($info, true);
     $data['efq_' . $type] += _efq_views_get_field_data();
-    $data['efq_' . $type] += _efq_views_get_property_data($info);
+    $data['efq_' . $type] += _efq_views_get_property_data($type, $info);
 
     // Entity: Bundle is not supported for these two entity types.
     if ($type == 'comment' || $type == 'taxonomy_term') {
@@ -263,9 +263,10 @@ function _efq_views_get_field_data($entity_type = NULL) {
  * Helper for efq_views_views_data()
  * Returns the property data.
  *
- * @param $info Entity info array.
+ * @param $type Entity type for which the properties are being loaded.
+ * @param $info Entity info array for the given entity type.
  */
-function _efq_views_get_property_data($info = NULL) {
+function _efq_views_get_property_data($type = NULL, $info = NULL) {
   $data['property'] = array(
     'group' => t('Property'),
     'title' => t('Property'),
@@ -298,6 +299,89 @@ function _efq_views_get_property_data($info = NULL) {
     $data['property']['filter']['available_properties'] = $available_properties;
     $data['property']['sort']['available_properties'] = $available_properties;
     $data['property']['argument']['available_properties'] = $available_properties;
+  }
+
+  // Get individual properties using Entity Metadata
+  $supported_types = array('integer', 'decimal', 'duration', 'date', 'text', 'token', 'boolean', 'uri');
+  $metadata = entity_metadata_get_info($type);
+  foreach ($metadata['properties'] as $property => $property_info) {
+    // We already handle entity keys through the Entity handlers.
+    if (in_array($property, $info['entity keys'])) {
+      continue;
+    }
+    // Only allow the properties whose type we know how to handle
+    if (isset($property_info['type']) && !in_array($property_info['type'], $supported_types)) {
+      continue;
+    }
+
+    // Avoid generating a million notices.
+    if (!isset($property_info['type'])) {
+      $property_info['type'] = '';
+    }
+
+    // Identify likely handlers for each property, based on property type.
+    switch ($property_info['type']) {
+      case 'integer':
+      case 'decimal':
+      case 'duration':
+        $field = 'efq_views_handler_field_property_numeric';
+        $filter = 'efq_views_handler_filter_property_numeric';
+        $argument = 'efq_views_handler_argument_property_numeric';
+        break;
+      case 'boolean':
+        $field = 'efq_views_handler_field_property_boolean';
+        $filter = 'efq_views_handler_filter_property_boolean';
+        $argument = 'efq_views_handler_argument_property_boolean';
+        break;
+      case 'date':
+        $field = 'efq_views_handler_field_property_date';
+        $filter = 'efq_views_handler_filter_property_date';
+        $argument = 'efq_views_handler_argument_property_date';
+        break;
+      case 'uri':
+        // URIs aren't stored in the database, no need for additional handlers.
+        $field = 'efq_views_handler_field_property_uri';
+        break;
+      case 'text':
+      case 'token':
+      default:
+        $field = 'efq_views_handler_field_property_string';
+        $filter = 'efq_views_handler_filter_property_string';
+        $argument = 'efq_views_handler_argument_property_string';
+        break;
+    }
+
+    $data[$property] = array(
+      'group' => t('Property'),
+      'title' => $property_info['label'],
+      'help' =>  $property_info['description'],
+      'field' => array(
+        'click sortable' => FALSE,
+        'handler' => $field,
+      ),
+    );
+
+    // This property is a db column, we can do fun stuff with it.
+    if (in_array($property, $info['schema_fields_sql']['base table'])) {
+      $data[$property]['field'] = array(
+        'click sortable' => TRUE,
+        'handler' => $field,
+      );
+      $data[$property]['filter'] = array(
+        'handler' => $filter,
+      );
+      $data[$property]['sort'] = array(
+        'handler' => 'efq_views_handler_sort_property',
+      );
+      $data[$property]['argument'] = array(
+        'handler' => $argument,
+      );
+    }
+
+    // Do we need a special callback for getting the value of this field?
+    if (isset($property_info['getter callback'])) {
+      $data[$property]['field']['getter callback'] = $property_info['getter callback'];
+    }
   }
 
   return $data;

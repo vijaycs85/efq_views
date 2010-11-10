@@ -3,7 +3,7 @@ name = EntityFieldQuery Views Backend
 description = Enables Views to use EntityFieldQuery as the query backend.
 package = Views
 dependencies[] = views
-dependencies[] = field
+dependencies[] = entity_metadata
 core = 7.x
 
 ; Base module files
