@@ -338,7 +338,7 @@ function _efq_views_get_property_data($type = NULL, $info = NULL) {
       case 'date':
         $field = 'efq_views_handler_field_property_date';
         $filter = 'efq_views_handler_filter_property_date';
-        $argument = 'efq_views_handler_argument_property_date';
+        $argument = NULL;
         break;
       case 'uri':
         // URIs aren't stored in the database, no need for additional handlers.
