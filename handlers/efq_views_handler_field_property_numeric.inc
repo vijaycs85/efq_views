@@ -4,7 +4,7 @@
 /**
  * Field handler for numeric properties.
  */
-class efq_views_handler_field_property_numeric extends views_handler_field {
+class efq_views_handler_field_property_numeric extends views_handler_field_numeric {
   /**
    * Called to determine what to tell the clicksorter.
    */
