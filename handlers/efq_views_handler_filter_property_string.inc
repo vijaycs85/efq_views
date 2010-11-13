@@ -2,7 +2,7 @@
 // $Id$
 
 /**
- * String filter for entity properties.
+ * Filter handler for textual properties.
  */
 class efq_views_handler_filter_property_string extends views_handler_filter_string {
   /**

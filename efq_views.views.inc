@@ -56,7 +56,7 @@ function _efq_views_get_entity_data($info = NULL, $exclude_type = FALSE) {
     'help' => t('The entity ID of the entity.'),
     'field' => array(
       'click sortable' => TRUE,
-      'handler' => 'efq_views_handler_field_entity_numeric',
+      'handler' => 'efq_views_handler_field_entity',
     ),
     'filter' => array(
       'handler' => 'efq_views_handler_filter_entity_numeric',
@@ -74,7 +74,7 @@ function _efq_views_get_entity_data($info = NULL, $exclude_type = FALSE) {
     'help' => t('The revision ID of the entity revision.'),
     'field' => array(
       'click sortable' => TRUE,
-      'handler' => 'efq_views_handler_field_entity_numeric',
+      'handler' => 'efq_views_handler_field_entity',
     ),
     'filter' => array(
       'handler' => 'efq_views_handler_filter_entity_numeric',
@@ -329,9 +329,11 @@ function _efq_views_get_property_data($type = NULL, $info = NULL) {
         $argument = 'efq_views_handler_argument_property_numeric';
         break;
       case 'boolean':
+        // Views proper doesn't let boolean fields have argument handlers,
+        // so neither do we.
         $field = 'efq_views_handler_field_property_boolean';
         $filter = 'efq_views_handler_filter_property_boolean';
-        $argument = 'efq_views_handler_argument_property_boolean';
+        $argument = NULL;
         break;
       case 'date':
         $field = 'efq_views_handler_field_property_date';
@@ -373,14 +375,25 @@ function _efq_views_get_property_data($type = NULL, $info = NULL) {
       $data[$property]['sort'] = array(
         'handler' => 'efq_views_handler_sort_property',
       );
-      $data[$property]['argument'] = array(
-        'handler' => $argument,
-      );
+
+      if (isset($argument)) {
+        $data[$property]['argument'] = array(
+          'handler' => $argument,
+        );
+      }
     }
 
     // Do we need a special callback for getting the value of this field?
     if (isset($property_info['getter callback'])) {
       $data[$property]['field']['getter callback'] = $property_info['getter callback'];
+    }
+
+    // Used for textual properties.
+    if (isset($property_info['sanitize'])) {
+      $data[$property]['field']['sanitize'] = $property_info['sanitize'];
+    }
+    if (isset($property_info['sanitized'])) {
+      $data[$property]['field']['sanitized'] = $property_info['sanitized'];
     }
   }
 
