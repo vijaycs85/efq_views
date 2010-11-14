@@ -19,18 +19,8 @@ class efq_views_handler_field_property_string extends views_handler_field {
 
   function render($values) {
     $wrapper = entity_metadata_wrapper($this->query->entity_type, $values);
-    $value = $wrapper->{$this->real_field}->value();
-
-    // Is the property already sanitized?
-    // Does it have special ideas regarding how it should be sanitized?
-    if (isset($this->definition['sanitized']) && $this->definition['sanitized'] == TRUE) {
-      return $value;
-    }
-    else if (isset($this->definition['sanitize'])) {
-      return $this->definition['sanitize']($value);
-    }
-    else {
-      return check_plain($value);
-    }
+    $value = $wrapper->{$this->real_field}->value(array('sanitize' => TRUE));
+    
+    return $value;
   }
 }

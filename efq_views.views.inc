@@ -354,7 +354,7 @@ function _efq_views_get_property_data($type = NULL, $info = NULL) {
     }
 
     $data[$property] = array(
-      'group' => t('Property'),
+      'group' => $info['label'],
       'title' => $property_info['label'],
       'help' =>  $property_info['description'],
       'field' => array(
@@ -386,14 +386,6 @@ function _efq_views_get_property_data($type = NULL, $info = NULL) {
     // Do we need a special callback for getting the value of this field?
     if (isset($property_info['getter callback'])) {
       $data[$property]['field']['getter callback'] = $property_info['getter callback'];
-    }
-
-    // Used for textual properties.
-    if (isset($property_info['sanitize'])) {
-      $data[$property]['field']['sanitize'] = $property_info['sanitize'];
-    }
-    if (isset($property_info['sanitized'])) {
-      $data[$property]['field']['sanitized'] = $property_info['sanitized'];
     }
   }
 
