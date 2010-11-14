@@ -2,7 +2,7 @@
 // $Id$
 
 /**
- * Numeric argument handler for entity metadata.
+ * Numeric argument handler for entity keys.
  */
 class efq_views_handler_argument_entity_numeric extends views_handler_argument_numeric {
   function query() {

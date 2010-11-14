@@ -2,7 +2,7 @@
 // $Id$
 
 /**
- * Numeric filter for entity metadata.
+ * Numeric filter for entity keys.
  */
 class efq_views_handler_filter_entity_numeric extends views_handler_filter_numeric {
   /**

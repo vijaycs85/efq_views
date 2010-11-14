@@ -2,8 +2,7 @@
 // $Id$
 
 /**
- * Field handler for entity metadata.
- * Maps the entity keys to real returned data (for example: entity_id => nid, for node).
+ * Field handler for entity keys.
  */
 class efq_views_handler_field_entity extends views_handler_field {
   /**
@@ -64,6 +63,10 @@ class efq_views_handler_field_entity extends views_handler_field {
     return $data;
   }
 
+  /**
+   * Maps the entity keys to real returned data
+   * (for example: entity_id => nid, for node).
+   */
   function render($values) {
     if ($this->field == 'entity_type') {
       return $values->entity_type;

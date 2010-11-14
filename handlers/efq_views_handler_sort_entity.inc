@@ -2,7 +2,7 @@
 // $Id$
 
 /**
- * Sort handler for entity metadata.
+ * Sort handler for entity keys.
  */
 class efq_views_handler_sort_entity extends views_handler_sort {
   function query() {

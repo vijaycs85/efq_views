@@ -7,7 +7,10 @@ in the driver (EntityFieldQuery: Multiple).
 Choosing a base table (such as EntityFieldQuery: Node) sets the entity_type
 and only shows fields attached to that entity type.
 
-Introduction article: http://vividintent.com/introducing-efq-views
+Requires Entity Metadata (http://drupal.org/project/entity).
+
+http://vividintent.com/introducing-efq-views
+http://vividintent.com/efq-views-continued
 
 Limitations
 -----------
