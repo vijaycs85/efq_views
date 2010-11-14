@@ -8,6 +8,7 @@ class efq_views_handler_filter_property_date extends views_handler_filter_date {
   function value_form(&$form, &$form_state) {
     parent::value_form($form, $form_state);
     unset($form['value']['type']);
+    $form['value']['value']['#description'] = t('A date in any machine readable format. CCYY-MM-DD HH:MM:SS is preferred.');
   }
 
   function query() {
@@ -31,6 +32,6 @@ class efq_views_handler_filter_property_date extends views_handler_filter_date {
 
   function op_simple($field) {
     $value = intval(strtotime($this->value['value'], 0));
-    $this->query->query->propertyCondition($field, $value, '=');
+    $this->query->query->propertyCondition($field, $value, $this->operator);
   }
 }
