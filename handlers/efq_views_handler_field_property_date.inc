@@ -11,12 +11,8 @@ class efq_views_handler_field_property_date extends views_handler_field_date {
   function query() {}
 
   function render($values) {
-    if (isset($this->definition['getter callback'])) {
-      $value = $this->definition['getter callback']($values, array(), $this->real_field);
-    }
-    else {
-      $value = $values->{$this->real_field};
-    }
+    $wrapper = entity_metadata_wrapper($this->query->entity_type, $values);
+    $value = $wrapper->{$this->real_field}->value();
 
     $format = $this->options['date_format'];
     if (in_array($format, array('custom', 'raw time ago', 'time ago', 'raw time span', 'time span'))) {

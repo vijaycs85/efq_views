@@ -18,12 +18,8 @@ class efq_views_handler_field_property_string extends views_handler_field {
   function query() {}
 
   function render($values) {
-    if (isset($this->definition['getter callback'])) {
-      $value = $this->definition['getter callback']($values, array(), $this->real_field);
-    }
-    else {
-      $value = $values->{$this->real_field};
-    }
+    $wrapper = entity_metadata_wrapper($this->query->entity_type, $values);
+    $value = $wrapper->{$this->real_field}->value();
 
     // Is the property already sanitized?
     // Does it have special ideas regarding how it should be sanitized?

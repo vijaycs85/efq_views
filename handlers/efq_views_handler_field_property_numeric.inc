@@ -18,12 +18,8 @@ class efq_views_handler_field_property_numeric extends views_handler_field_numer
   function query() {}
 
   function render($values) {
-    if (isset($this->definition['getter callback'])) {
-      $value = $this->definition['getter callback']($values, array(), $this->real_field);
-    }
-    else {
-      $value = $values->{$this->real_field};
-    }
+    $wrapper = entity_metadata_wrapper($this->query->entity_type, $values);
+    $value = $wrapper->{$this->real_field}->value();
 
     if (!empty($this->options['set_precision'])) {
       $value = number_format($value, $this->options['precision'], $this->options['decimal'], $this->options['separator']);
