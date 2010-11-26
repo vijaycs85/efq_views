@@ -382,11 +382,6 @@ function _efq_views_get_property_data($type = NULL, $info = NULL) {
         );
       }
     }
-
-    // Do we need a special callback for getting the value of this field?
-    if (isset($property_info['getter callback'])) {
-      $data[$property]['field']['getter callback'] = $property_info['getter callback'];
-    }
   }
 
   return $data;
