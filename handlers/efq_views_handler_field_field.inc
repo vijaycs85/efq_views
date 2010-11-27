@@ -21,10 +21,10 @@ class efq_views_handler_field_field extends views_handler_field_field {
       if (!isset($entity->{$this->field_alias})) {
         continue;
       }
-      
-      $values[$id]->_field_cache[$this->field_alias] = array(
-            'entity_type' => $entity->entity_type,
-            'object' => $entity,
+
+      $values[$id]->_field_data[$this->field_alias] = array(
+        'entity_type' => $entity->entity_type,
+        'object' => $entity,
       );
     }
   }
