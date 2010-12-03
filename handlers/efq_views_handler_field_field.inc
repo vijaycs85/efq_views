@@ -6,6 +6,13 @@
  */
 class efq_views_handler_field_field extends views_handler_field_field {
   /**
+   * Called to determine what to tell the clicksorter.
+   */
+  function click_sort($order) {
+    $this->query->query->fieldOrderBy($this->field, $this->options['click_sort_column'], $order);
+  }
+
+  /**
    * Override the parent's methods since they don't need to do anything.
    */
   function query() {}

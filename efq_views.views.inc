@@ -186,7 +186,7 @@ function _efq_views_get_field_data($entity_type = NULL) {
       'title short' => $field_name,
       'help' =>  t('Appears in: @bundles', array('@bundles' => implode(', ', $bundles_names))),
       'field' => array(
-        'click sortable' => FALSE,
+        'click sortable' => TRUE,
         'handler' => 'efq_views_handler_field_field',
         'field_name' => $field_name,
       ),
