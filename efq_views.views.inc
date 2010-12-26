@@ -303,7 +303,7 @@ function _efq_views_get_property_data($type = NULL, $info = NULL) {
 
   // Get individual properties using Entity Metadata
   $supported_types = array('integer', 'decimal', 'duration', 'date', 'text', 'token', 'boolean', 'uri');
-  $metadata = entity_metadata_get_info($type);
+  $metadata = entity_get_property_info($type);
   foreach ($metadata['properties'] as $property => $property_info) {
     // We already handle entity keys through the Entity handlers.
     if (in_array($property, $info['entity keys'])) {
