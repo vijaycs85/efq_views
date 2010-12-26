@@ -11,7 +11,7 @@ class efq_views_handler_field_property_date extends views_handler_field_date {
   function click_sort($order) {
     $this->query->query->propertyOrderBy($this->real_field, $order);
   }
-  
+
   /**
    * Override the parent's query method, since it doesn't need to do anything.
    */
@@ -26,10 +26,7 @@ class efq_views_handler_field_property_date extends views_handler_field_date {
       $custom_format = $this->options['custom_date_format'];
     }
 
-    if (!$value) {
-      return theme('views_nodate');
-    }
-    else {
+    if ($value) {
       $time_diff = REQUEST_TIME - $value; // will be positive for a datetime in the past (ago), and negative for a datetime in the future (hence)
       switch ($format) {
         case 'raw time ago':
