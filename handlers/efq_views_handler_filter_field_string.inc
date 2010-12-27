@@ -42,10 +42,6 @@ class efq_views_handler_filter_field_string extends views_handler_filter_string 
 
   function option_definition() {
     $options = parent::option_definition();
-
-    // We don't care about case sensitivity.
-    unset($options['case']);
-
     $options['delta'] = array('default' => NULL);
 
     return $options;
@@ -53,9 +49,6 @@ class efq_views_handler_filter_field_string extends views_handler_filter_string 
 
   function options_form(&$form, &$form_state) {
     parent::options_form($form, $form_state);
-    // We don't care about case sensitivity.
-    unset($form['case']);
-
     $form['delta'] = array(
       '#type' => 'textfield',
       '#title' => t('Delta'),
