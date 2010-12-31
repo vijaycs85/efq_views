@@ -10,6 +10,7 @@ core = 7.x
 files[] = efq_views.module
 files[] = efq_views.views.inc
 files[] = efq_views_plugin_query.inc
+files[] = efq_views_plugin_row_entity.inc
 
 ; Views handlers
 files[] = handlers/efq_views_handler_field_entity.inc

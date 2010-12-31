@@ -391,7 +391,7 @@ function _efq_views_get_property_data($type = NULL, $info = NULL) {
  * Implements hook_views_plugins().
  */
 function efq_views_views_plugins() {
-  return array(
+  $plugins = array(
     'query' => array(
       'efq_query' => array(
         'title' => t('EntityFieldQuery'),
@@ -399,7 +399,30 @@ function efq_views_views_plugins() {
         'handler' => 'efq_views_plugin_query',
       ),
     ),
+    'row' => array(
+      'entity' => array(
+        'title' => t('Entity'),
+        'help' => t('Displays a single entity in a specific build mode(e.g. teaser).'),
+        'handler' => 'efq_views_plugin_row_entity',
+        'uses fields' => FALSE,
+        'uses options' => TRUE,
+        'type' => 'normal',
+        'help topic' => 'style-row-entity',
+        'base' => array(),
+      ),
+    ),
   );
+
+  // Use the entity row plugin on all entity types, except nodes and
+  // comments, since they already have their own.
+  foreach (entity_get_info() as $entity_type => $entity_info) {
+    if (in_array($entity_type, array('node', 'comment'))) {
+      continue;
+    }
+    $plugins['row']['entity']['base'][] = 'efq_' . $entity_type;
+  }
+
+  return $plugins;
 }
 
 /**
