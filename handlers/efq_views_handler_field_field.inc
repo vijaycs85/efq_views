@@ -31,7 +31,7 @@ class efq_views_handler_field_field extends views_handler_field_field {
 
       $values[$id]->_field_data[$this->field_alias] = array(
         'entity_type' => $entity->entity_type,
-        'object' => $entity,
+        'entity' => $entity,
       );
     }
   }

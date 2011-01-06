@@ -305,10 +305,6 @@ function _efq_views_get_property_data($type = NULL, $info = NULL) {
   $supported_types = array('integer', 'decimal', 'duration', 'date', 'text', 'token', 'boolean', 'uri');
   $metadata = entity_get_property_info($type);
   foreach ($metadata['properties'] as $property => $property_info) {
-    // We already handle entity keys through the Entity handlers.
-    if (in_array($property, $info['entity keys'])) {
-      continue;
-    }
     // Only allow the properties whose type we know how to handle
     if (isset($property_info['type']) && !in_array($property_info['type'], $supported_types)) {
       continue;
