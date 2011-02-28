@@ -7,11 +7,11 @@
 class efq_views_handler_filter_entity_bundle extends efq_views_handler_filter_entity_in_operator {
   function get_value_options() {
     if (!isset($this->value_options)) {
-      $bundles = field_info_bundles($this->query->entity_type);
+      $bundles = field_info_bundles($this->definition['entity_type']);
       $this->value_title = t('Bundle');
 
       // EFQ: Mixed, display bundles for all entity types
-      if (!$this->query->entity_type) {
+      if (!isset($this->definition['entity_type'])) {
         foreach ($bundles as $entity_type => $entity_bundles) {
           foreach ($entity_bundles as $bundle => $info) {
             $label = isset($info['label']) ? $info['label'] : $bundle;

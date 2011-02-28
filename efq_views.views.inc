@@ -15,7 +15,7 @@ function efq_views_views_data() {
       'query class' => 'efq_query',
       'field' => $info['entity keys']['id'],
     );
-    $data['efq_' . $type] += _efq_views_get_entity_data($info, true);
+    $data['efq_' . $type] += _efq_views_get_entity_data($info, $type);
     $data['efq_' . $type] += _efq_views_get_field_data();
     $data['efq_' . $type] += _efq_views_get_property_data($type, $info);
 
@@ -46,10 +46,9 @@ function efq_views_views_data() {
  * (entity_id, revision_id, entity_type, bundle).
  *
  * @param $info Entity info array.
- * @param boolean $exclude_type Whether to exclude entity_type (in cases when
- *                              it's already specified through the base table)
+ * @param $entity_type The selected entity type, if any.
  */
-function _efq_views_get_entity_data($info = NULL, $exclude_type = FALSE) {
+function _efq_views_get_entity_data($info = NULL, $entity_type = NULL) {
   $data['entity_id'] = array(
     'group' => t('Entity'),
     'title' => t('Entity ID'),
@@ -87,7 +86,7 @@ function _efq_views_get_entity_data($info = NULL, $exclude_type = FALSE) {
     ),
   );
 
-  if (!$exclude_type) {
+  if (!isset($entity_type)) {
     $data['entity_type'] = array(
       'group' => t('Entity'),
       'title' => t('Entity Type'),
@@ -117,6 +116,7 @@ function _efq_views_get_entity_data($info = NULL, $exclude_type = FALSE) {
       'handler' => 'efq_views_handler_field_entity',
     ),
     'filter' => array(
+      'entity_type' => $entity_type,
       'handler' => 'efq_views_handler_filter_entity_bundle',
     ),
     'sort' => array(
