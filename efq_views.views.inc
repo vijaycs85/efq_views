@@ -378,11 +378,8 @@ function _efq_views_get_property_data($type = NULL, $info = NULL) {
       );
       $data[$property]['filter'] = array(
         'handler' => $filter,
+        'options callback' => isset($property_info['options list']) ? $property_info['options list'] : NULL,
       );
-      if (isset($property_info['options list'])) {
-        $data[$property]['filter']['options callback'] = $property_info['options list'];
-      }
-
       $data[$property]['sort'] = array(
         'handler' => 'efq_views_handler_sort_property',
       );
