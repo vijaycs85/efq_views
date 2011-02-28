@@ -345,8 +345,14 @@ function _efq_views_get_property_data($type = NULL, $info = NULL) {
         // URIs aren't stored in the database, no need for additional handlers.
         $field = 'efq_views_handler_field_property_uri';
         break;
-      case 'text':
       case 'token':
+        if (isset($property_info['options list'])) {
+          $field = 'efq_views_handler_field_property_string';
+          $filter = 'efq_views_handler_filter_property_in_operator';
+          $argument = 'efq_views_handler_argument_property_string';
+          break;
+        }
+      case 'text':
       default:
         $field = 'efq_views_handler_field_property_string';
         $filter = 'efq_views_handler_filter_property_string';
@@ -373,6 +379,10 @@ function _efq_views_get_property_data($type = NULL, $info = NULL) {
       $data[$property]['filter'] = array(
         'handler' => $filter,
       );
+      if (isset($property_info['options list'])) {
+        $data[$property]['filter']['options callback'] = $property_info['options list'];
+      }
+
       $data[$property]['sort'] = array(
         'handler' => 'efq_views_handler_sort_property',
       );
