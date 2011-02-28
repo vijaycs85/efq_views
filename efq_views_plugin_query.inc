@@ -29,6 +29,54 @@ class efq_views_plugin_query extends views_plugin_query {
     }
   }
 
+  function option_definition() {
+    $options = parent::option_definition();
+    $options['field_language'] = array(
+      'default' => '***CURRENT_LANGUAGE***',
+    );
+    return $options;
+  }
+
+  /**
+   * Show field language settings if the entity type we are querying has
+   * field translation enabled.
+   * If we are querying multiple entity types, then the settings are shown
+   * if at least one entity type has field translation enabled.
+   */
+  function options_form(&$form, &$form_state) {
+    if (isset($this->entity_type)) {
+      $entities = array();
+      $entities[$this->entity_type] = entity_get_info($this->entity_type);
+    }
+    else {
+      $entities = entity_get_info();
+    }
+
+    $has_translation_handlers = FALSE;
+    foreach ($entities as $type => $entity_info) {
+      if (!empty($entity_info['translation'])) {
+        $has_translation_handlers = TRUE;
+      }
+    }
+
+    if ($has_translation_handlers) {
+      $languages = array(
+        '***CURRENT_LANGUAGE***' => t("Current user's language"),
+        '***DEFAULT_LANGUAGE***' => t("Default site language"),
+        LANGUAGE_NONE => t('No language')
+      );
+      $languages = array_merge($languages, locale_language_list());
+
+      $form['field_language'] = array(
+        '#type' => 'select',
+        '#title' => t('Field Language'),
+        '#description' => t('All fields which support translations will be displayed in the selected language.'),
+        '#options' => $languages,
+        '#default_value' => $this->options['field_language'],
+      );
+    }
+  }
+
   /**
    * Builds the necessary info to execute the query.
    */

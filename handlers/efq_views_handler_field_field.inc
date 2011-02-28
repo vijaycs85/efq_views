@@ -6,6 +6,16 @@
  */
 class efq_views_handler_field_field extends views_handler_field_field {
   /**
+   * Determine if this field is click sortable..
+   */
+  function click_sortable() {
+    if (empty($this->definition['click sortable'])) {
+      return FALSE;
+    }
+    return TRUE;
+  }
+
+  /**
    * Called to determine what to tell the clicksorter.
    */
   function click_sort($order) {
@@ -13,9 +23,33 @@ class efq_views_handler_field_field extends views_handler_field_field {
   }
 
   /**
-   * Override the parent's methods since they don't need to do anything.
+   * Override the parent's query method, since it doesn't need to actually
+   * do anything.
    */
   function query() {}
+
+  /**
+   * Provide options for multiple value fields.
+   *
+   * This module only supports showing all values in a single row, so the
+   * options need to change accordingly.
+   */
+  function multiple_options_form(&$form, &$form_state) {
+    parent::multiple_options_form($form, $form_state);
+
+    $form['group_rows'] = array(
+      '#type' => 'value',
+      '#value' => TRUE,
+    );
+
+    // No reason for elements to depend on group_rows anymore.
+    unset($form['multi_type']['#dependency']);
+    unset($form['separator']['#dependency']['edit-options-group-rows']);
+    unset($form['separator']['#dependency_count']);
+    unset($form['delta_limit']['#dependency']);
+    unset($form['delta_offset']['#dependency']);
+    unset($form['delta_reversed']['#dependency']);
+  }
 
   /**
    * Prepare $values to a format that the parent::render method understands,

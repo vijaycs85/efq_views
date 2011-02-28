@@ -176,14 +176,18 @@ function _efq_views_get_field_data($entity_type = NULL) {
         $bundles_names[] = t('@entity:@bundle', array('@entity' => $entity_type, '@bundle' => $bundle));
       }
     }
+    // Note: we don't have a label available here, because we are at the field
+    // level, not at the instance level. So we just go through all instances
+    // and take the one which is used the most frequently.
     $field_name = $field['field_name'];
+    $label = field_views_field_label($field_name);
 
     // This provides a Views field.
     // Arguments/filters/sorts are provided per column, so there are none here.
     $data[$field_name] = array(
       'group' => t('Fields'),
-      'title' => $field_name,
-      'title short' => $field_name,
+      'title' => $label,
+      'title short' => $label,
       'help' =>  t('Appears in: @bundles', array('@bundles' => implode(', ', $bundles_names))),
       'field' => array(
         'click sortable' => TRUE,
@@ -218,11 +222,12 @@ function _efq_views_get_field_data($entity_type = NULL) {
       }
 
       if (count($field['columns']) == 1 && $column == 'value') {
-        $title = t('@label (!name)', array('@label' => $field_name, '!name' => $field_name));
+        $title = t('@label (!name)', array('@label' => $label, '!name' => $field_name));
+        // CCK used the first 10 characters of $label. Probably doesn't matter.
         $title_short = $field_name;
       }
       else {
-        $title = t('@label (!name) - !column', array('@label' => $field_name, '!name' => $field_name, '!column' => $column));
+        $title = t('@label (!name) - !column', array('@label' => $label, '!name' => $field_name, '!column' => $column));
         $title_short = t('@label-truncated - !column', array('@label-truncated' => $field_name, '!column' => $column));
       }
 
@@ -350,7 +355,7 @@ function _efq_views_get_property_data($type = NULL, $info = NULL) {
     }
 
     $data[$property] = array(
-      'group' => $info['label'],
+      'group' => t('Content'),
       'title' => $property_info['label'],
       'help' =>  $property_info['description'],
       'field' => array(
