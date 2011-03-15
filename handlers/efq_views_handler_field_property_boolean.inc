@@ -17,19 +17,16 @@ class efq_views_handler_field_property_boolean extends views_handler_field_boole
    */
   function query() {}
 
-  function render($values) {
+  /**
+   * Get the value that's supposed to be rendered.
+   *
+   * @param $values
+   *   An entity object containing all retrieved values.
+   * @param $field
+   *   Optional name of the field where the value is stored.
+   */
+  function get_value($values, $field = NULL) {
     $wrapper = entity_metadata_wrapper($this->query->entity_type, $values);
-    $value = $wrapper->{$this->real_field}->value();
-
-    if (!empty($this->options['not'])) {
-      $value = !$value;
-    }
-
-    if (isset($this->formats[$this->options['type']])) {
-      return $value ? $this->formats[$this->options['type']][0] : $this->formats[$this->options['type']][1];
-    }
-    else {
-      return $value ? $this->formats['yes-no'][0] : $this->formats['yes-no'][1];
-    }
+    return $wrapper->{$this->real_field}->value();
   }
 }

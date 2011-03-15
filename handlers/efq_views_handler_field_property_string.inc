@@ -17,10 +17,16 @@ class efq_views_handler_field_property_string extends views_handler_field {
    */
   function query() {}
 
-  function render($values) {
+  /**
+   * Get the value that's supposed to be rendered.
+   *
+   * @param $values
+   *   An entity object containing all retrieved values.
+   * @param $field
+   *   Optional name of the field where the value is stored.
+   */
+  function get_value($values, $field = NULL) {
     $wrapper = entity_metadata_wrapper($this->query->entity_type, $values);
-    $value = $wrapper->{$this->real_field}->value(array('sanitize' => TRUE));
-    
-    return $value;
+    return $wrapper->{$this->real_field}->value();
   }
 }

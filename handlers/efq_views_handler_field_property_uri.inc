@@ -10,15 +10,16 @@ class efq_views_handler_field_property_uri extends views_handler_field_url {
    */
   function query() {}
 
-  function render($values) {
+  /**
+   * Get the value that's supposed to be rendered.
+   *
+   * @param $values
+   *   An entity object containing all retrieved values.
+   * @param $field
+   *   Optional name of the field where the value is stored.
+   */
+  function get_value($values, $field = NULL) {
     $wrapper = entity_metadata_wrapper($this->query->entity_type, $values);
-    $value = $wrapper->{$this->real_field}->value();
-
-    if (!empty($this->options['display_as_link'])) {
-      return l(check_plain($value), $value, array('html' => TRUE));
-    }
-    else {
-      return $value;
-    }
+    return $wrapper->{$this->real_field}->value();
   }
 }
