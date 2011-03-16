@@ -352,14 +352,14 @@ function _efq_views_get_property_data($type = NULL, $info = NULL) {
         $field = 'efq_views_handler_field_property_uri';
         break;
       case 'token':
+      case 'text':
+      default:
         if (isset($property_info['options list'])) {
           $field = 'efq_views_handler_field_property_string';
           $filter = 'efq_views_handler_filter_property_in_operator';
           $argument = 'efq_views_handler_argument_property_string';
           break;
         }
-      case 'text':
-      default:
         $field = 'efq_views_handler_field_property_string';
         $filter = 'efq_views_handler_filter_property_string';
         $argument = 'efq_views_handler_argument_property_string';
