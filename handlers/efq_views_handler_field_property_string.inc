@@ -26,7 +26,8 @@ class efq_views_handler_field_property_string extends views_handler_field {
    *   Optional name of the field where the value is stored.
    */
   function get_value($values, $field = NULL) {
+    $field = isset($field) ? $field : $this->real_field;
     $wrapper = entity_metadata_wrapper($this->query->entity_type, $values);
-    return $wrapper->{$this->real_field}->value();
+    return $wrapper->{$field}->value();
   }
 }
