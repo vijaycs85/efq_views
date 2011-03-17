@@ -303,18 +303,27 @@ function _efq_views_get_property_data($type = NULL, $info = NULL) {
     return $data;
   }
 
+  $metadata = entity_get_property_info($type);
+
   // Provide additional help.
   if (isset($info['schema_fields_sql']['base table'])) {
     $available_properties = $info['schema_fields_sql']['base table'];
-    $data['property']['field']['available_properties'] = $available_properties;
-    $data['property']['filter']['available_properties'] = $available_properties;
-    $data['property']['sort']['available_properties'] = $available_properties;
-    $data['property']['argument']['available_properties'] = $available_properties;
+    foreach ($available_properties as $key => $property) {
+      if (isset($metadata['properties'][$property])) {
+        $properties[$property] = $metadata['properties'][$property]['label'];
+      }
+      else {
+        $properties[$property] = $property;
+      }
+    }
+    $data['property']['field']['available_properties'] = $properties;
+    $data['property']['filter']['available_properties'] = $properties;
+    $data['property']['sort']['available_properties'] = $properties;
+    $data['property']['argument']['available_properties'] = $properties;
   }
 
   // Get individual properties using Entity Metadata
   $supported_types = array('integer', 'decimal', 'duration', 'date', 'text', 'token', 'boolean', 'uri');
-  $metadata = entity_get_property_info($type);
   foreach ($metadata['properties'] as $property => $property_info) {
     // Only allow the properties whose type we know how to handle
     if (isset($property_info['type']) && !in_array($property_info['type'], $supported_types)) {
