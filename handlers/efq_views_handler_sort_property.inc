@@ -50,7 +50,7 @@ class efq_views_handler_sort_property extends views_handler_sort {
     // We know which properties are available, so we can show a select box.
     if (isset($this->definition['available_properties'])) {
       $form['column']['#type'] = 'select';
-      $form['column']['#options'] = array_combine($this->definition['available_properties'], $this->definition['available_properties']);
+      $form['column']['#options'] = $this->definition['available_properties'];
     }
   }
 
