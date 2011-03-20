@@ -176,7 +176,7 @@ function _efq_views_get_entity_data($info = NULL, $entity_type = NULL) {
  */
 function _efq_views_get_field_data($entity_type = NULL) {
   foreach (field_info_fields($entity_type) as $field) {
-    $bundle_names = array();
+    $bundles_names = array();
     foreach ($field['bundles'] as $entity_type => $bundles) {
       foreach ($bundles as $bundle) {
         $bundles_names[] = t('@entity:@bundle', array('@entity' => $entity_type, '@bundle' => $bundle));
