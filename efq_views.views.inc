@@ -15,8 +15,8 @@ function efq_views_views_data() {
       'query class' => 'efq_query',
       'field' => $info['entity keys']['id'],
     );
-    $data['efq_' . $type] += _efq_views_get_entity_data($info, $type);
-    $data['efq_' . $type] += _efq_views_get_field_data();
+    $data['efq_' . $type] += _efq_views_get_entity_data($type, $info);
+    $data['efq_' . $type] += _efq_views_get_field_data($type, $info);
     $data['efq_' . $type] += _efq_views_get_property_data($type, $info);
 
     // Entity: Bundle is not supported for these two entity types.
@@ -51,10 +51,10 @@ function efq_views_views_data() {
  * Returns all possible entity metadata variants
  * (entity_id, revision_id, entity_type, bundle).
  *
- * @param $info Entity info array.
  * @param $entity_type The selected entity type, if any.
+ * @param $info Entity info array.
  */
-function _efq_views_get_entity_data($info = NULL, $entity_type = NULL) {
+function _efq_views_get_entity_data($entity_type = NULL, $info = NULL) {
   $data['entity_id'] = array(
     'group' => t('Entity'),
     'title' => t('Entity ID'),
@@ -173,13 +173,22 @@ function _efq_views_get_entity_data($info = NULL, $entity_type = NULL) {
  * (or, if absent, all entity types).
  *
  * Based on field_views_field_default_views_data() from field.views.inc
+ *
+ * @param $entity_type The selected entity type, if any.
+ * @param $info Entity info array.
  */
-function _efq_views_get_field_data($entity_type = NULL) {
-  foreach (field_info_fields($entity_type) as $field) {
+function _efq_views_get_field_data($entity_type = NULL, $info = NULL) {
+  $data = array();
+  foreach (field_info_fields() as $field) {
+    // This field is not attached to any bundle of our content type.
+    if (isset($entity_type) && !isset($field['bundles'][$entity_type])) {
+      continue;
+    }
+
     $bundles_names = array();
-    foreach ($field['bundles'] as $entity_type => $bundles) {
+    foreach ($field['bundles'] as $type => $bundles) {
       foreach ($bundles as $bundle) {
-        $bundles_names[] = t('@entity:@bundle', array('@entity' => $entity_type, '@bundle' => $bundle));
+        $bundles_names[] = t('@entity:@bundle', array('@entity' => $type, '@bundle' => $bundle));
       }
     }
     // Note: we don't have a label available here, because we are at the field
@@ -188,10 +197,16 @@ function _efq_views_get_field_data($entity_type = NULL) {
     $field_name = $field['field_name'];
     $label = field_views_field_label($field_name);
 
+    $group_name = isset($info) ? $info['label'] : t('Fields');
+    // Override Node to Content.
+    if ($group_name == t('Node')) {
+      $group_name = t('Content');
+    }
+
     // This provides a Views field.
     // Arguments/filters/sorts are provided per column, so there are none here.
     $data[$field_name] = array(
-      'group' => t('Fields'),
+      'group' => $group_name,
       'title' => $label,
       'title short' => $label,
       'help' =>  t('Appears in: @bundles', array('@bundles' => implode(', ', $bundles_names))),
@@ -240,7 +255,7 @@ function _efq_views_get_field_data($entity_type = NULL) {
       // $data[$field_name][$column] doesn't work because $field_name is not a base table
       // hence, this ugly thing.
       $data[$field_name . '-' . $column] = array(
-        'group' => t('Fields'),
+        'group' => $group_name,
         'title' => $title,
         'title short' => $title_short,
         'help' =>  t('Appears in: @bundles', array('@bundles' => implode(', ', $bundles_names))),
@@ -274,10 +289,10 @@ function _efq_views_get_field_data($entity_type = NULL) {
  * Helper for efq_views_views_data()
  * Returns the property data.
  *
- * @param $type Entity type for which the properties are being loaded.
+ * @param $entity_type Entity type for which the properties are being loaded.
  * @param $info Entity info array for the given entity type.
  */
-function _efq_views_get_property_data($type = NULL, $info = NULL) {
+function _efq_views_get_property_data($entity_type = NULL, $info = NULL) {
   $data['property'] = array(
     'group' => t('Property'),
     'title' => t('Property'),
@@ -303,7 +318,7 @@ function _efq_views_get_property_data($type = NULL, $info = NULL) {
     return $data;
   }
 
-  $metadata = entity_get_property_info($type);
+  $metadata = entity_get_property_info($entity_type);
 
   // Provide additional help.
   if (isset($info['schema_fields_sql']['base table'])) {
@@ -383,8 +398,14 @@ function _efq_views_get_property_data($type = NULL, $info = NULL) {
         break;
     }
 
+    $group_name = $info['label'];
+    // Override Node to Content.
+    if ($group_name == t('Node')) {
+      $group_name = t('Content');
+    }
+
     $data[$property] = array(
-      'group' => t('Content'),
+      'group' => $group_name,
       'title' => $property_info['label'],
       'help' =>  $property_info['description'],
       'field' => array(
