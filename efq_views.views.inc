@@ -315,11 +315,19 @@ function _efq_views_get_property_data($type = NULL, $info = NULL) {
       else {
         $properties[$property] = $property;
       }
+      if (isset($metadata['properties'][$property]['type'])) {
+        $types[$property] = $metadata['properties'][$property]['type'];
+      }
     }
     $data['property']['field']['available_properties'] = $properties;
     $data['property']['filter']['available_properties'] = $properties;
     $data['property']['sort']['available_properties'] = $properties;
     $data['property']['argument']['available_properties'] = $properties;
+    // Store the datatype so that it can be used for casting values in handlers.
+    $data['property']['field']['types'] = $types;
+    $data['property']['filter']['types'] = $types;
+    $data['property']['sort']['types'] = $types;
+    $data['property']['argument']['types'] = $types;
   }
 
   // Get individual properties using Entity Metadata

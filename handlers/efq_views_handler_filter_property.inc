@@ -136,24 +136,30 @@ class efq_views_handler_filter_property extends views_handler_filter {
       '#title' => t('Value'),
       '#size' => 30,
       '#default_value' => $this->value['value'],
-      '#process' => array('ctools_dependent_process'),
+      '#process' => array('efq_views_value_form_process', 'ctools_dependent_process'),
       '#dependency' => array('radio:options[operator]' => array_map('htmlentities', $this->operator_values(1))),
+      '#column' => &$form['value']['column'],
+      '#types' => $this->definition['types'],
     );
     $form['value']['min'] = array(
       '#type' => 'textfield',
       '#title' => t('Min'),
       '#size' => 30,
       '#default_value' => $this->value['min'],
-      '#process' => array('ctools_dependent_process'),
+      '#process' => array('efq_views_value_form_process', 'ctools_dependent_process'),
       '#dependency' => array('radio:options[operator]' => array_map('htmlentities', $this->operator_values(2))),
+      '#column' => &$form['value']['column'],
+      '#types' => $this->definition['types'],
     );
     $form['value']['max'] = array(
       '#type' => 'textfield',
       '#title' => t('And max'),
       '#size' => 30,
       '#default_value' => $this->value['max'],
-      '#process' => array('ctools_dependent_process'),
+      '#process' => array('efq_views_value_form_process', 'ctools_dependent_process'),
       '#dependency' => array('radio:options[operator]' => array_map('htmlentities', $this->operator_values(2))),
+      '#column' => &$form['value']['column'],
+      '#types' => $this->definition['types'],
     );
   }
 
@@ -183,4 +189,20 @@ class efq_views_handler_filter_property extends views_handler_filter {
   function op_starts() {
     $this->query->query->propertyCondition($this->value['column'], $this->value['value'], "STARTS_WITH");
   }
+}
+
+/**
+ * Cast the provided value to the needed datatype before filtering.
+ * Databases such as mongodb require this.
+ */
+function efq_views_value_form_process($element, &$form_state) {
+  $column = $element['#column']['#value'];
+  $type = $element['#types'][$column];
+  switch ($type) {
+    case 'int':
+      $element['#value'] = (int) $element['#value'];
+      form_set_value($element, $element['#value'], $form_state);
+      break;
+  }
+  return $element;
 }
