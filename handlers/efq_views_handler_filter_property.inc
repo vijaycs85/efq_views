@@ -197,6 +197,11 @@ class efq_views_handler_filter_property extends views_handler_filter {
  */
 function efq_views_value_form_process($element, &$form_state) {
   $column = $element['#column']['#value'];
+  // There is no type info for this column, nothing left to do.
+  if (!isset($element['#types'][$column])) {
+    return;
+  }
+  
   $type = $element['#types'][$column];
   switch ($type) {
     case 'int':

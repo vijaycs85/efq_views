@@ -322,6 +322,7 @@ function _efq_views_get_property_data($entity_type = NULL, $info = NULL) {
 
   // Provide additional help.
   if (isset($info['schema_fields_sql']['base table'])) {
+    $types = array();
     $available_properties = $info['schema_fields_sql']['base table'];
     foreach ($available_properties as $key => $property) {
       if (isset($metadata['properties'][$property])) {
