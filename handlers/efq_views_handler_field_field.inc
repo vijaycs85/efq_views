@@ -63,7 +63,7 @@ class efq_views_handler_field_field extends views_handler_field_field {
    * Prepare $values to a format that the parent::render method understands,
    * so that we don't have to reinvent it.
    */
-  function pre_render(&$values) {
+  function post_execute(&$values) {
     $this->field_alias = $this->field;
 
     foreach ($values as $id => $entity) {
@@ -75,6 +75,11 @@ class efq_views_handler_field_field extends views_handler_field_field {
         'entity_type' => $entity->entity_type,
         'entity' => $entity,
       );
+    }
+
+    // Now, transfer the data back into the resultset so it can be easily used.
+    foreach ($values as $row_id => &$value) {
+      $value->{'field_' . $this->options['id']} = $this->set_items($value, $row_id);
     }
   }
 }
