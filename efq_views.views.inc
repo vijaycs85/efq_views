@@ -314,11 +314,15 @@ function _efq_views_get_property_data($entity_type = NULL, $info = NULL) {
 
   // No single entity_type specified, we can't find more info
   // through the entity definition. So, return what we have so far.
-  if (!isset($info)) {
+  if (!isset($entity_type)) {
     return $data;
   }
 
   $metadata = entity_get_property_info($entity_type);
+  // No metadata available for this entity type.
+  if (!isset($metadata['properties'])) {
+    return $data;
+  }
 
   // Provide additional help.
   if (isset($info['schema_fields_sql']['base table'])) {
