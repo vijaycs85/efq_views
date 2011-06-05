@@ -5,6 +5,14 @@
  * Field handler for fields.
  */
 class efq_views_handler_field_field extends views_handler_field_field {
+
+  /**
+   * Return TRUE if the user has access to view this field.
+   */
+  function access() {
+    return field_access('view', $this->field_info, $this->definition['entity_type']);
+  }
+
   /**
    * Determine if this field is click sortable..
    */

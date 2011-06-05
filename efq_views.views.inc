@@ -214,6 +214,7 @@ function _efq_views_get_field_data($entity_type = NULL, $info = NULL) {
         'click sortable' => TRUE,
         'handler' => 'efq_views_handler_field_field',
         'field_name' => $field_name,
+        'entity_type' => $entity_type,
       ),
     );
 
