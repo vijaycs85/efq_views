@@ -195,7 +195,7 @@ function _efq_views_get_field_data($entity_type = NULL, $info = NULL) {
     // level, not at the instance level. So we just go through all instances
     // and take the one which is used the most frequently.
     $field_name = $field['field_name'];
-    $label = field_views_field_label($field_name);
+    list($label, $all_labels) = field_views_field_label($field_name);
 
     $group_name = isset($info) ? $info['label'] : t('Fields');
     // Override Node to Content.
@@ -217,6 +217,26 @@ function _efq_views_get_field_data($entity_type = NULL, $info = NULL) {
         'entity_type' => $entity_type,
       ),
     );
+
+    // Add an alias for each alternative field label.
+    $aliases = array();
+    $also_known = array();
+    foreach ($all_labels as $entity_name => $labels) {
+      foreach ($labels as $label_name => $true) {
+        if ($label != $label_name) {
+          $aliases[] = array(
+            'group' => $group_name,
+            'title' => $label_name,
+            'help' => t('This is an alias of @group: @field.', array('@group' => $group_name, '@field' => $label)),
+          );
+        }
+        $also_known[] = t('@group: @field', array('@group' => $group_name, '@field' => $label_name));
+      }
+    }
+    if ($aliases) {
+      $data[$field_name]['aliases'] = $aliases;
+      $data[$field_name]['help'] .= ' ' . t('Also known as: !also.', array('!also' => implode(', ', $also_known)));
+    }
 
     foreach ($field['columns'] as $column => $attributes) {
       $allow_sort = TRUE;
