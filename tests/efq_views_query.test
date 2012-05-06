@@ -9,6 +9,7 @@
  * Abstract class for EFQ views testing.
  */
 abstract class EFQViewsTestCase extends DrupalWebTestCase {
+  protected $entities = array();
   protected function setUp() {
     if (module_exists('mongodb')) {
        variable_set('field_storage_default', 'mongodb_field_storage');
@@ -50,13 +51,7 @@ abstract class EFQViewsTestCase extends DrupalWebTestCase {
     $view->disabled = FALSE; /* Edit this to true to make a default view disabled initially */
 
     /* Display: Master */
-    $handler = $view->new_display('default', 'Master', 'default');
-    $handler->display->display_options['access']['type'] = 'none';
-    $handler->display->display_options['cache']['type'] = 'none';
-    $handler->display->display_options['query']['type'] = 'views_query';
-    $handler->display->display_options['exposed_form']['type'] = 'basic';
-    $handler->display->display_options['pager']['type'] = 'full';
-    $handler->display->display_options['style_plugin'] = 'default';
+    $handler = $view->new_display('default');
     $handler->display->display_options['row_plugin'] = 'fields';
     $handler->display->display_options['row_options']['default_field_elements'] = FALSE;
     /* Field: Entity: Entity ID */
@@ -111,6 +106,13 @@ abstract class EFQViewsTestCase extends DrupalWebTestCase {
 
     return $view;
   }
+
+  protected function runView() {
+    $view = $this->view();
+    $content = $view->preview();
+    $this->verbose($content);
+    $this->drupalSetContent($content);
+  }
 }
 
 class EFQViewsFieldTestCase extends EFQViewsTestCase {
@@ -118,7 +120,7 @@ class EFQViewsFieldTestCase extends EFQViewsTestCase {
     return array(
       'name' => 'EFQ Views fields',
       'description' => 'Tests EFQ Views field handlers',
-      'group' => 'Views',
+      'group' => 'EFQ Views',
     );
   }
   protected $entities = array(
@@ -137,10 +139,7 @@ class EFQViewsFieldTestCase extends EFQViewsTestCase {
   );
 
   function testBasic() {
-    $view = $this->view();
-    $content = $view->preview();
-    $this->verbose($content);
-    $this->drupalSetContent($content);
+    $this->runView();
     $entity = $this->entities[0];
     $this->assertPattern("/Entity ID: +$entity->eid/", 'Entity ID found');
     $this->assertPattern("/Efq views test ID: +$entity->eid/", 'Entity ID (meta) found');
@@ -151,5 +150,38 @@ class EFQViewsFieldTestCase extends EFQViewsTestCase {
     $url = url("custom/$entity->uid", array('absolute' => TRUE));
     $this->assertPattern('/URL: +' . preg_quote(l($url, $url), '/') . '/', 'URL found');
     $this->assertPattern('/field boolean: +On/', 'Boolean field API field found');
+  }
+}
+
+class EFQViewsNodeLinkTestCase extends EFQViewsTestCase {
+   function getInfo() {
+    return array(
+      'name' => 'EFQ Views node link',
+      'description' => 'Tests EFQ Views sees a Views-defined special field.',
+      'group' => 'EFQ Views',
+    );
+  }
+
+  function view() {
+    $view = new view();
+    $view->base_table = 'efq_node';
+    /* Display: Master */
+    $handler = $view->new_display('default');
+    $handler->display->display_options['row_plugin'] = 'fields';
+    /* Field: Node: Edit link */
+    $handler->display->display_options['fields']['edit_node']['id'] = 'edit_node';
+    $handler->display->display_options['fields']['edit_node']['table'] = 'views_entity_node';
+    $handler->display->display_options['fields']['edit_node']['field'] = 'edit_node';
+    return $view;
+  }
+
+  function testNodeLink() {
+    $node = $this->drupalCreateNode();
+    $account = $this->drupalCreateUser(array('bypass node access'));
+    $this->drupalLogin($account);
+    $this->runView();
+    $this->assertRaw('Edit link:');
+    $this->clickLink('edit');
+    $this->assertFieldByName('title', $node->title);
   }
 }

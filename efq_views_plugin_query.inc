@@ -185,6 +185,7 @@ class efq_views_plugin_query extends views_plugin_query {
 
   function get_result_entities($results) {
     $entity = reset($results);
-    return array($entity->entityType(), $results);
+    $entity_type = method_exists($entity, 'entityType') ? $entity->entityType() : $entity->entity_type;
+    return array($entity_type, $results);
   }
 }
