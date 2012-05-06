@@ -11,7 +11,19 @@
 abstract class EFQViewsTestCase extends DrupalWebTestCase {
   protected function setUp() {
     parent::setUp('efq_views_test');
-
+    $field = array(
+      'field_name' => 'field_boolean',
+      'type' => 'list_boolean',
+    );
+    $field['settings']['allowed_values'] = array('Off', 'On');
+    field_create_field($field);
+    $instance = array (
+      'field_name' => 'field_boolean',
+      'entity_type' => 'efq_views_test',
+      'bundle' => 'bundle1',
+      'label' => 'field boolean',
+    );
+    field_create_instance($instance);
     // Load the test dataset.
     foreach ($this->entities as $key => $entity_array) {
       $entity = entity_create('efq_views_test', $entity_array);
@@ -20,30 +32,6 @@ abstract class EFQViewsTestCase extends DrupalWebTestCase {
       $this->entities[$key] = $entity;
     }
   }
-}
-
-class EFQViewsPropertiesTestCase extends EFQViewsTestCase {
-  function getInfo() {
-    return array(
-      'name' => 'EFQ Views Properties',
-      'description' => 'Tests EFQ Views property handlers',
-      'group' => 'Views',
-    );
-  }
-  protected $entities = array(
-    array(
-      'bundle' => 'bundle1',
-      'label' => 'test label 1',
-      'uid' => 1,
-      'test_boolean' => TRUE,
-      'test_integer' => 15,
-      'test_decimal' => 78,
-      'test_duration' => 900,
-      'test_date' => 1336236850,
-      'test_text' => 'test text',
-    ),
-  );
-
   protected function view() {
     $view = new view();
     $view->name = 'test';
@@ -110,8 +98,37 @@ class EFQViewsPropertiesTestCase extends EFQViewsTestCase {
     $handler->display->display_options['fields']['url']['id'] = 'url';
     $handler->display->display_options['fields']['url']['table'] = 'efq_efq_views_test';
     $handler->display->display_options['fields']['url']['field'] = 'url';
+    /* Field: EFQ Views test: field boolean */
+    $handler->display->display_options['fields']['field_boolean']['id'] = 'field_boolean';
+    $handler->display->display_options['fields']['field_boolean']['table'] = 'efq_efq_views_test';
+    $handler->display->display_options['fields']['field_boolean']['field'] = 'field_boolean';
+
     return $view;
   }
+}
+
+class EFQViewsFieldTestCase extends EFQViewsTestCase {
+  function getInfo() {
+    return array(
+      'name' => 'EFQ Views fields',
+      'description' => 'Tests EFQ Views field handlers',
+      'group' => 'Views',
+    );
+  }
+  protected $entities = array(
+    array(
+      'bundle' => 'bundle1',
+      'label' => 'test label 1',
+      'uid' => 1,
+      'test_boolean' => TRUE,
+      'test_integer' => 15,
+      'test_decimal' => 78,
+      'test_duration' => 900,
+      'test_date' => 1336236850,
+      'test_text' => 'test text',
+      'field_boolean' => array(LANGUAGE_NONE => array(array('value' => 1))),
+    ),
+  );
 
   function testBasic() {
     $view = $this->view();
@@ -127,5 +144,6 @@ class EFQViewsPropertiesTestCase extends EFQViewsTestCase {
     $this->assertPattern('/Test_text: +test text/', 'Test text found');
     $url = url("custom/$entity->uid", array('absolute' => TRUE));
     $this->assertPattern('/URL: +' . preg_quote(l($url, $url), '/') . '/', 'URL found');
+    $this->assertPattern('/field boolean: +On/', 'Boolean field API field found');
   }
 }
