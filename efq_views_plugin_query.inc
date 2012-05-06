@@ -22,11 +22,9 @@ class efq_views_plugin_query extends views_plugin_query {
 
     // An entity type (such as EntityFieldQuery: Node) was selected.
     // We have entity type passed in as base table, prefixed with 'efq_'
-    if ($base_table != 'efq_multiple') {
-      $entity_type = preg_replace('/^efq_/', '', $base_table);
-      $this->entity_type = $entity_type;
-      $this->query->entityCondition('entity_type', $entity_type);
-    }
+    $entity_type = preg_replace('/^efq_/', '', $base_table);
+    $this->entity_type = $entity_type;
+    $this->query->entityCondition('entity_type', $entity_type);
   }
 
   function option_definition() {

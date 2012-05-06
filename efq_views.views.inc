@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 /**
  * Implements hook_views_data().
@@ -25,20 +24,8 @@ function efq_views_views_data() {
       unset($data['efq_' . $type]['bundle']);
     }
   }
-  // Kill EFQ: Multiple for now.
-  return $data;
 
-  // Now add the EFQ: Multiple base table, for querying across
-  // multiple entity types.
-  $data['efq_multiple']['table']['base'] = array(
-    'title' => t('EntityFieldQuery: Multiple'),
-    'help' => t('Uses EntityFieldQuery for querying multiple entity types.'),
-    'query class' => 'efq_query',
-    'field' => '',
-  );
-  $data['efq_multiple'] += _efq_views_get_entity_data();
-  $data['efq_multiple'] += _efq_views_get_field_data();
-  $data['efq_multiple'] += _efq_views_get_property_data();
+  return $data;
 }
 
 /**

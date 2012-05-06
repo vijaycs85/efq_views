@@ -1,16 +1,7 @@
 This module enables Views to use EntityFieldQuery as the query backend,
 allowing you to query fields stored in non-sql storage (such as mongodb).
 
-Note that EntityFieldQuery does not need an entity_type specified, it can
-query multiple entity types with the same field attached. This is reflected
-in the driver (EntityFieldQuery: Multiple).
-Choosing a base table (such as EntityFieldQuery: Node) sets the entity_type
-and only shows fields attached to that entity type.
-
 Requires the Entity API (http://drupal.org/project/entity).
-
-http://vividintent.com/introducing-efq-views
-http://vividintent.com/efq-views-continued
 
 Limitations
 -----------
