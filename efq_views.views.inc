@@ -15,6 +15,7 @@ function efq_views_views_data() {
       'query class' => 'efq_query',
       'field' => $info['entity keys']['id'],
     );
+    $data['efq_' . $type]['table']['entity type'] = $type;
     $data['efq_' . $type] += _efq_views_get_entity_data($type, $info);
     $data['efq_' . $type] += _efq_views_get_field_data($type, $info);
     $data['efq_' . $type] += _efq_views_get_property_data($type, $info);
@@ -22,12 +23,6 @@ function efq_views_views_data() {
     // Entity: Bundle is not supported for these two entity types.
     if ($type == 'comment' || $type == 'taxonomy_term') {
       unset($data['efq_' . $type]['bundle']);
-    }
-
-    // Base tables with 'entity type' defined get the entity row plugin added
-    // by the Entity API. Nodes and comments already have their own row plugins.
-    if (!in_array($type, array('node', 'comment'))) {
-      $data['efq_' . $type]['table']['base']['entity type'] = $type;
     }
   }
   // Kill EFQ: Multiple for now.
