@@ -124,6 +124,7 @@ class EFQViewsPropertiesTestCase extends EFQViewsTestCase {
     $this->assertPattern("/Test_boolean: +Yes/", 'Boolean found');
     $this->assertPattern('/Test_decimal: +' . ($entity->test_decimal / 100) . '/', 'Decimal found');
     $this->assertPattern('/Test_date: +' . preg_quote(format_date($entity->test_date), '/') . '/', 'Date found');
+    $this->assertPattern('/Test_text: +test text/', 'Test text found');
     $url = url("custom/$entity->uid", array('absolute' => TRUE));
     $this->assertPattern('/URL: +' . preg_quote(l($url, $url), '/') . '/', 'URL found');
   }
