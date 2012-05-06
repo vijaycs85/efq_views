@@ -435,6 +435,7 @@ function _efq_views_get_property_data($entity_type = NULL, $info = NULL) {
       'title' => $property_info['label'],
       'help' =>  $property_info['description'],
       'field' => array(
+        'type' => $entity_type,
         'click sortable' => FALSE,
         'handler' => $field,
       ),
