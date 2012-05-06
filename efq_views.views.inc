@@ -30,6 +30,8 @@ function efq_views_views_data() {
       $data['efq_' . $type]['table']['base']['entity type'] = $type;
     }
   }
+  // Kill EFQ: Multiple for now.
+  return $data;
 
   // Now add the EFQ: Multiple base table, for querying across
   // multiple entity types.
@@ -42,8 +44,6 @@ function efq_views_views_data() {
   $data['efq_multiple'] += _efq_views_get_entity_data();
   $data['efq_multiple'] += _efq_views_get_field_data();
   $data['efq_multiple'] += _efq_views_get_property_data();
-
-  return $data;
 }
 
 /**
@@ -443,6 +443,7 @@ function _efq_views_get_property_data($entity_type = NULL, $info = NULL) {
     // This property is a db column, we can do fun stuff with it.
     if (in_array($property, $info['schema_fields_sql']['base table'])) {
       $data[$property]['field'] = array(
+        'type' => $entity_type,
         'click sortable' => TRUE,
         'handler' => $field,
       );

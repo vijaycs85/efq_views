@@ -184,4 +184,9 @@ class efq_views_plugin_query extends views_plugin_query {
 
     $view->execute_time = microtime(true) - $start;
   }
+
+  function get_result_entities($results) {
+    $entity = reset($results);
+    return array($entity->entityType(), $results);
+  }
 }

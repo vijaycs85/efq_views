@@ -112,6 +112,7 @@ class EFQViewsPropertiesTestCase extends EFQViewsTestCase {
     $handler->display->display_options['fields']['url']['field'] = 'url';
     return $view;
   }
+
   function testBasic() {
     $view = $this->view();
     $content = $view->preview();
