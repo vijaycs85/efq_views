@@ -10,7 +10,7 @@
  */
 abstract class EFQViewsTestCase extends DrupalWebTestCase {
   protected function setUp() {
-    parent::setUp('views', 'views_ui', 'efq_views', 'efq_views_test');
+    parent::setUp('efq_views_test');
 
     // Load the test dataset.
     foreach ($this->entities as $key => $entity_array) {
