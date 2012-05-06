@@ -10,7 +10,13 @@
  */
 abstract class EFQViewsTestCase extends DrupalWebTestCase {
   protected function setUp() {
-    parent::setUp('efq_views_test');
+    if (module_exists('mongodb')) {
+       variable_set('field_storage_default', 'mongodb_field_storage');
+       parent::setUp('mongodb_field_storage', 'efq_views_test');
+    }
+    else {
+      parent::setUp('efq_views_test');
+    }
     $field = array(
       'field_name' => 'field_boolean',
       'type' => 'list_boolean',
