@@ -413,12 +413,12 @@ function _efq_views_get_property_data($entity_type = NULL, $info = NULL) {
       case 'text':
       default:
         if (isset($property_info['options list'])) {
-          $field = 'efq_views_handler_field_property_string';
+          $field = 'efq_views_handler_field_property_text';
           $filter = 'efq_views_handler_filter_property_in_operator';
           $argument = 'efq_views_handler_argument_property_string';
           break;
         }
-        $field = 'efq_views_handler_field_property_string';
+        $field = 'efq_views_handler_field_property_text';
         $filter = 'efq_views_handler_filter_property_string';
         $argument = 'efq_views_handler_argument_property_string';
         break;

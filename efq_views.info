@@ -1,4 +1,3 @@
-; $Id$
 name = EntityFieldQuery Views Backend
 description = Enables Views to use EntityFieldQuery as the query backend.
 package = Views
@@ -38,7 +37,7 @@ files[] = handlers/efq_views_handler_field_property_uri.inc
 files[] = handlers/efq_views_handler_field_property_boolean.inc
 files[] = handlers/efq_views_handler_field_property_date.inc
 files[] = handlers/efq_views_handler_filter_property.inc
-files[] = handlers/efq_views_handler_filter_property_string.inc
+files[] = handlers/efq_views_handler_filter_property_text.inc
 files[] = handlers/efq_views_handler_filter_property_numeric.inc
 files[] = handlers/efq_views_handler_filter_property_in_operator.inc
 files[] = handlers/efq_views_handler_filter_property_boolean.inc
