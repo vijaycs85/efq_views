@@ -130,16 +130,18 @@ class EFQViewsFieldTestCase extends EFQViewsTestCase {
   }
 
   function testFilters() {
-    $view = $this->view();
-    $handler = $view->display['default']->handler;
-    $handler->display->display_options['filters']['test_boolean']['id'] = 'test_boolean';
-    $handler->display->display_options['filters']['test_boolean']['table'] = 'efq_efq_views_test';
-    $handler->display->display_options['filters']['test_boolean']['field'] = 'test_boolean';
-    $handler->display->display_options['filters']['test_boolean']['value']['value'] = '1';
-    $this->runView($view);
-    $this->assertEqual(count($view->result), 1);
-    $entity = $this->entities[0];
-    $this->assertPattern("/Entity ID: +$entity->eid/", 'Entity ID found');
+    foreach (array('1', '0') as $key => $value) {
+      $view = $this->view();
+      $handler = $view->display['default']->handler;
+      $handler->display->display_options['filters']['test_boolean']['id'] = 'test_boolean';
+      $handler->display->display_options['filters']['test_boolean']['table'] = 'efq_efq_views_test';
+      $handler->display->display_options['filters']['test_boolean']['field'] = 'test_boolean';
+      $handler->display->display_options['filters']['test_boolean']['value'] = $value;
+      $this->runView($view);
+      $this->assertEqual(count($view->result), 1);
+      $entity = $this->entities[$key];
+      $this->assertPattern("/Entity ID: +$entity->eid/", 'Entity ID found');
+    }
   }
 }
 
