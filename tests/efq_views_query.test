@@ -42,7 +42,6 @@ abstract class EFQViewsTestCase extends DrupalWebTestCase {
   protected function view() {
     $view = new view();
     $view->base_table = 'efq_efq_views_test';
-    $view->simpletest = TRUE;
     /* Display: Master */
     $handler = $view->new_display('default');
     $handler->display->display_options['row_options']['default_field_elements'] = FALSE;

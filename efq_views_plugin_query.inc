@@ -131,12 +131,11 @@ class efq_views_plugin_query extends views_plugin_query {
           throw($e);
         }
         // Show the full exception message in Views admin.
-        // However, don't show that to the user on the frontend.
         if (!empty($view->live_preview)) {
           drupal_set_message($e->getMessage(), 'error');
         }
         else {
-          drupal_set_message(t('An error occured while generating the requested view.'), 'error');
+          vpr('Exception in @human_name[@view_name]: @message', array('@human_name' => $view->human_name, '@view_name' => $view->name, '@message' => $e->getMessage()));
         }
         return;
       }
@@ -172,16 +171,12 @@ class efq_views_plugin_query extends views_plugin_query {
       }
     }
     catch (Exception $e) {
-      if (!empty($view->simpletest)) {
-        throw($e);
-      }
       // Show the full exception message in Views admin.
-      // However, don't show that to the user on the frontend.
       if (!empty($view->live_preview)) {
         drupal_set_message($e->getMessage(), 'error');
       }
       else {
-        drupal_set_message(t('An error occured while generating the requested view.'), 'error');
+        vpr('Exception in @human_name[@view_name]: @message', array('@human_name' => $view->human_name, '@view_name' => $view->name, '@message' => $e->getMessage()));
       }
       return;
     }
