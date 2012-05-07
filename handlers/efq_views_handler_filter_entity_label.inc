@@ -43,7 +43,7 @@ class efq_views_handler_filter_entity_label extends views_handler_filter_string 
 
     return $operators;
   }
-  
+
   function query() {
     $info = $this->operators();
     if (!empty($info[$this->operator]['method'])) {
@@ -66,5 +66,5 @@ class efq_views_handler_filter_entity_label extends views_handler_filter_string 
   /**
    * NULL comparisons are not supported
    */
-  function op_empty() {}
+  function op_empty($field) {}
 }
