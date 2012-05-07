@@ -45,56 +45,27 @@ abstract class EFQViewsTestCase extends DrupalWebTestCase {
     /* Display: Master */
     $handler = $view->new_display('default');
     $handler->display->display_options['row_options']['default_field_elements'] = FALSE;
-    /* Field: Entity: Entity ID */
-    $handler->display->display_options['fields']['entity_id']['id'] = 'entity_id';
-    $handler->display->display_options['fields']['entity_id']['table'] = 'efq_efq_views_test';
-    $handler->display->display_options['fields']['entity_id']['field'] = 'entity_id';
-
-    /* Field: EFQ Views test: Efq views test ID */
-    $handler->display->display_options['fields']['eid']['id'] = 'eid';
-    $handler->display->display_options['fields']['eid']['table'] = 'efq_efq_views_test';
-    $handler->display->display_options['fields']['eid']['field'] = 'eid';
-    /* Field: EFQ Views test: Language */
-    $handler->display->display_options['fields']['language']['id'] = 'language';
-    $handler->display->display_options['fields']['language']['table'] = 'efq_efq_views_test';
-    $handler->display->display_options['fields']['language']['field'] = 'language';
-    /* Field: EFQ Views test: Test_boolean */
-    $handler->display->display_options['fields']['test_boolean']['id'] = 'test_boolean';
-    $handler->display->display_options['fields']['test_boolean']['table'] = 'efq_efq_views_test';
-    $handler->display->display_options['fields']['test_boolean']['field'] = 'test_boolean';
-    /* Field: EFQ Views test: Test_date */
-    $handler->display->display_options['fields']['test_date']['id'] = 'test_date';
-    $handler->display->display_options['fields']['test_date']['table'] = 'efq_efq_views_test';
-    $handler->display->display_options['fields']['test_date']['field'] = 'test_date';
-    /* Field: EFQ Views test: Test_decimal */
-    $handler->display->display_options['fields']['test_decimal']['id'] = 'test_decimal';
-    $handler->display->display_options['fields']['test_decimal']['table'] = 'efq_efq_views_test';
-    $handler->display->display_options['fields']['test_decimal']['field'] = 'test_decimal';
-    /* Field: EFQ Views test: Test_duration */
-    $handler->display->display_options['fields']['test_duration']['id'] = 'test_duration';
-    $handler->display->display_options['fields']['test_duration']['table'] = 'efq_efq_views_test';
-    $handler->display->display_options['fields']['test_duration']['field'] = 'test_duration';
-    /* Field: EFQ Views test: Test_integer */
-    $handler->display->display_options['fields']['test_integer']['id'] = 'test_integer';
-    $handler->display->display_options['fields']['test_integer']['table'] = 'efq_efq_views_test';
-    $handler->display->display_options['fields']['test_integer']['field'] = 'test_integer';
-    /* Field: EFQ Views test: Test_text */
-    $handler->display->display_options['fields']['test_text']['id'] = 'test_text';
-    $handler->display->display_options['fields']['test_text']['table'] = 'efq_efq_views_test';
-    $handler->display->display_options['fields']['test_text']['field'] = 'test_text';
-    /* Field: EFQ Views test: Uid */
-    $handler->display->display_options['fields']['uid']['id'] = 'uid';
-    $handler->display->display_options['fields']['uid']['table'] = 'efq_efq_views_test';
-    $handler->display->display_options['fields']['uid']['field'] = 'uid';
-    /* Field: EFQ Views test: URL */
-    $handler->display->display_options['fields']['url']['id'] = 'url';
-    $handler->display->display_options['fields']['url']['table'] = 'efq_efq_views_test';
-    $handler->display->display_options['fields']['url']['field'] = 'url';
-    /* Field: EFQ Views test: field boolean */
-    $handler->display->display_options['fields']['field_boolean']['id'] = 'field_boolean';
-    $handler->display->display_options['fields']['field_boolean']['table'] = 'efq_efq_views_test';
-    $handler->display->display_options['fields']['field_boolean']['field'] = 'field_boolean';
-
+    $fields = array(
+      'entity_id',
+      'eid',
+      'language',
+      'test_boolean',
+      'test_date',
+      'test_decimal',
+      'test_duration',
+      'test_integer',
+      'test_text',
+      'uid',
+      'url',
+      'field_boolean',
+    );
+    foreach ($fields as $field) {
+      $handler->display->display_options['fields'][$field] = array (
+        'id' => $field,
+        'field' => $field,
+        'table' => 'efq_efq_views_test',
+      );
+    }
     return $view;
   }
 
