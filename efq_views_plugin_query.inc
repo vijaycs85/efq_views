@@ -127,6 +127,9 @@ class efq_views_plugin_query extends views_plugin_query {
         $this->pager->update_page_info();
       }
       catch (Exception $e) {
+        if (!empty($view->simpletest)) {
+          throw($e);
+        }
         // Show the full exception message in Views admin.
         // However, don't show that to the user on the frontend.
         if (!empty($view->live_preview)) {
@@ -169,6 +172,9 @@ class efq_views_plugin_query extends views_plugin_query {
       }
     }
     catch (Exception $e) {
+      if (!empty($view->simpletest)) {
+        throw($e);
+      }
       // Show the full exception message in Views admin.
       // However, don't show that to the user on the frontend.
       if (!empty($view->live_preview)) {

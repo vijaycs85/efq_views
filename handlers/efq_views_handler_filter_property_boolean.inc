@@ -10,7 +10,7 @@ class efq_views_handler_filter_property_boolean extends views_handler_filter_boo
       $this->query->query->propertyCondition($this->real_field, 0, "=");
     }
     else {
-      $this->query->query->propertyCondition($this->real_field, 0, "!=");
+      $this->query->query->propertyCondition($this->real_field, 0, "<>");
     }
   }
 }
