@@ -230,6 +230,9 @@ function _efq_views_get_field_data($entity_type = NULL, $info = NULL) {
         case 'tinyint':
         case 'bigint':
         case 'serial':
+          $filter = 'efq_views_handler_filter_field_integer';
+          $argument = 'efq_views_handler_argument_field_integer';
+          break;
         case 'numeric':
         case 'float':
           $filter = 'efq_views_handler_filter_field_numeric';
@@ -369,6 +372,10 @@ function _efq_views_get_property_data($entity_type = NULL, $info = NULL) {
     // Identify likely handlers for each property, based on property type.
     switch ($property_info['type']) {
       case 'integer':
+        $field = 'efq_views_handler_field_property_numeric';
+        $filter = 'efq_views_handler_filter_property_integer';
+        $argument = 'efq_views_handler_argument_property_integer';
+        break;
       case 'decimal':
       case 'duration':
         $field = 'efq_views_handler_field_property_numeric';
