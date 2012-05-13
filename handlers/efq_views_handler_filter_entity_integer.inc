@@ -2,9 +2,9 @@
 // $Id$
 
 /**
- * Numeric filter for entity keys.
+ * Integer filter for entity keys.
  */
-class efq_views_handler_filter_entity_numeric extends views_handler_filter_numeric {
+class efq_views_handler_filter_entity_integer extends views_handler_filter_numeric {
   /**
    * We don't support every operator from the parent class ("not between", for example),
    * hence the need to define only the operators we do support.
@@ -66,11 +66,11 @@ class efq_views_handler_filter_entity_numeric extends views_handler_filter_numer
   }
 
   function op_simple($name) {
-    $this->query->query->entityCondition($name, $this->value['value'], $this->operator);
+    $this->query->query->entityCondition($name, (int) $this->value['value'], $this->operator);
   }
 
   function op_between($name) {
-    $this->query->query->entityCondition($name, array($this->value['min'], $this->value['max']), "BETWEEN");
+    $this->query->query->entityCondition($name, (int) array($this->value['min'], (int) $this->value['max']), "BETWEEN");
   }
 
   /**

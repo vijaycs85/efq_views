@@ -46,13 +46,13 @@ function _efq_views_get_entity_data($entity_type = NULL, $info = NULL) {
       'handler' => 'efq_views_handler_field_entity',
     ),
     'filter' => array(
-      'handler' => 'efq_views_handler_filter_entity_numeric',
+      'handler' => 'efq_views_handler_filter_entity_integer',
     ),
     'sort' => array(
       'handler' => 'efq_views_handler_sort_entity',
     ),
     'argument' => array(
-     'handler' => 'efq_views_handler_argument_entity_numeric',
+     'handler' => 'efq_views_handler_argument_entity_integer',
     ),
   );
   $data['revision_id'] = array(
@@ -64,13 +64,13 @@ function _efq_views_get_entity_data($entity_type = NULL, $info = NULL) {
       'handler' => 'efq_views_handler_field_entity',
     ),
     'filter' => array(
-      'handler' => 'efq_views_handler_filter_entity_numeric',
+      'handler' => 'efq_views_handler_filter_entity_integer',
     ),
     'sort' => array(
       'handler' => 'efq_views_handler_sort_entity',
     ),
     'argument' => array(
-     'handler' => 'efq_views_handler_argument_entity_numeric',
+     'handler' => 'efq_views_handler_argument_entity_integer',
     ),
   );
 
