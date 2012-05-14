@@ -260,6 +260,7 @@ function _efq_views_get_field_data($entity_type = NULL, $info = NULL) {
 
       // $data[$field_name][$column] doesn't work because $field_name is not a base table
       // hence, this ugly thing.
+      // @TODO: hook in lists.
       $data[$field_name . '-' . $column] = array(
         'group' => $group_name,
         'title' => $title,

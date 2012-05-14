@@ -30,8 +30,8 @@ class efq_views_handler_filter_field_in_operator extends views_handler_filter_in
 
     // We use array_values() because the checkboxes keep keys and that can cause
     // array addition problems.
-    $delta = is_numeric($this->options['delta']) ? $this->options['delta'] : NULL;
-    $this->query->query->fieldCondition($this->definition['field_name'], $this->real_field, array_values($this->value), $this->operator, $delta);
+    $delta = is_numeric($this->options['delta']) ? (int) $this->options['delta'] : NULL;
+    $this->query->query->fieldCondition($this->definition['field_name'], $this->real_field, array_map('intval', array_values($this->value)), $this->operator, $delta);
   }
 
   /**
