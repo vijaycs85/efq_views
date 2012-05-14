@@ -159,7 +159,7 @@ function _efq_views_get_entity_data($entity_type = NULL, $info = NULL) {
  * @param $entity_type The selected entity type, if any.
  * @param $info Entity info array.
  */
-function _efq_views_get_field_data($entity_type = NULL, $info = NULL) {
+function _efq_views_get_field_data($entity_type, $info) {
   $data = array();
   foreach (field_info_fields() as $field) {
     // This field is not attached to any bundle of our content type.
@@ -186,7 +186,8 @@ function _efq_views_get_field_data($entity_type = NULL, $info = NULL) {
     }
 
     // This provides a Views field.
-    // Arguments/filters/sorts are provided per column, so there are none here.
+    // Arguments/filters/sorts are provided per column per default but some
+    // types get handlers.
     $data[$field_name] = array(
       'group' => $group_name,
       'title' => $label,
@@ -247,8 +248,15 @@ function _efq_views_get_field_data($entity_type = NULL, $info = NULL) {
           $argument = 'efq_views_handler_argument_field_string';
           break;
       }
+      unset($definition);
+      if ($field['module'] == 'list') {
+        $filter = 'efq_views_handler_filter_field_list';
+        $definition = &$data[$field_name];
+        $definition['cast to int'] = ($attributes['type'] == 'int');
+      }
+      $single_column = count($field['columns']) == 1;
 
-      if (count($field['columns']) == 1 && $column == 'value') {
+      if ($single_column && $column == 'value') {
         $title = t('@label (!name)', array('@label' => $label, '!name' => $field_name));
         // CCK used the first 10 characters of $label. Probably doesn't matter.
         $title_short = $field_name;
@@ -257,11 +265,19 @@ function _efq_views_get_field_data($entity_type = NULL, $info = NULL) {
         $title = t('@label (!name) - !column', array('@label' => $label, '!name' => $field_name, '!column' => $column));
         $title_short = t('@label-truncated - !column', array('@label-truncated' => $field_name, '!column' => $column));
       }
+      if ($single_column) {
+        $definition = &$data[$field_name];
+      }
+      if (!isset($definition)) {
+        // By setting only if necessary we avoid an empty
+        // $data[$field_name . '-' . $column] for lists.
+        // $data[$field_name][$column] doesn't work because $field_name is
+        // not a base table hence, this ugly thing.
+        $data[$field_name . '-' . $column] = array();
+        $definition = &$data[$field_name . '-' . $column];
+      }
 
-      // $data[$field_name][$column] doesn't work because $field_name is not a base table
-      // hence, this ugly thing.
-      // @TODO: hook in lists.
-      $data[$field_name . '-' . $column] = array(
+      $definition += array(
         'group' => $group_name,
         'title' => $title,
         'title short' => $title_short,
@@ -280,7 +296,7 @@ function _efq_views_get_field_data($entity_type = NULL, $info = NULL) {
         ),
       );
       if (!empty($allow_sort)) {
-        $data[$field_name . '-' . $column]['sort'] = array(
+        $definition['sort'] = array(
           'field' => $column,
           'handler' => 'efq_views_handler_sort_field',
           'field_name' => $field_name,

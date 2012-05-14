@@ -184,10 +184,10 @@ class EFQViewsFieldTestCase extends EFQViewsTestCase {
     foreach (array('1', '0') as $key => $value) {
       $view = $this->view();
       $handler = $view->display['default']->handler;
-      $handler->display->display_options['filters']['field_boolean']['id'] = 'field_boolean-value';
+      $handler->display->display_options['filters']['field_boolean']['id'] = 'field_boolean';
       $handler->display->display_options['filters']['field_boolean']['table'] = 'efq_efq_views_test';
-      $handler->display->display_options['filters']['field_boolean']['field'] = 'field_boolean-value';
-      $handler->display->display_options['filters']['field_boolean']['value'] = $value;
+      $handler->display->display_options['filters']['field_boolean']['field'] = 'field_boolean';
+      $handler->display->display_options['filters']['field_boolean']['value'] = array($value);
       $this->runView($view);
       $this->assertEqual(count($view->result), 1);
       $entity = $this->entities[$key];
