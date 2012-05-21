@@ -4,7 +4,7 @@
 /**
  * Handle matching of multiple options selectable via checkboxes
  */
-class efq_views_handler_filter_field_in_operator extends views_handler_filter_in_operator {
+class efq_views_handler_filter_field_in_operator extends efq_views_handler_filter_in_operator {
   function option_definition() {
     $options = parent::option_definition();
     $options['delta'] = array('default' => NULL);
@@ -42,9 +42,4 @@ class efq_views_handler_filter_field_in_operator extends views_handler_filter_in
     }
     $this->query->query->fieldCondition($this->definition['field_name'], $this->real_field, $values, $this->operator, $delta);
   }
-
-  /**
-   * NULL comparisons are not supported
-   */
-  function op_empty() {}
 }

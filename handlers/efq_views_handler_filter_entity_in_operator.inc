@@ -4,7 +4,7 @@
 /**
  * Handle matching of multiple options selectable via checkboxes
  */
-class efq_views_handler_filter_entity_in_operator extends views_handler_filter_in_operator {
+class efq_views_handler_filter_entity_in_operator extends efq_views_handler_filter_in_operator {
   function op_simple() {
     if (empty($this->value)) {
       return;
@@ -14,9 +14,4 @@ class efq_views_handler_filter_entity_in_operator extends views_handler_filter_i
     // array addition problems.
     $this->query->query->entityCondition($this->real_field, array_values($this->value), $this->operator);
   }
-
-  /**
-   * NULL comparisons are not supported
-   */
-  function op_empty() {}
 }
