@@ -39,4 +39,9 @@ class efq_views_handler_filter_in_operator extends views_handler_filter_in_opera
     );
     return $operators;
   }
+  function option_definition() {
+    $options = parent::option_definition();
+    $options['operator']['default'] = 'IN';
+    return $options;
+  }
 }

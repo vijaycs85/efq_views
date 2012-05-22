@@ -249,10 +249,11 @@ function _efq_views_get_field_data($entity_type, $info) {
           break;
       }
       unset($definition);
+      $cast_to_int = FALSE;
       if ($field['module'] == 'list') {
         $filter = 'efq_views_handler_filter_field_list';
         $definition = &$data[$field_name];
-        $definition['cast to int'] = ($attributes['type'] == 'int');
+        $cast_to_int = ($attributes['type'] == 'int');
       }
       $single_column = count($field['columns']) == 1;
 
@@ -283,16 +284,18 @@ function _efq_views_get_field_data($entity_type, $info) {
         'title short' => $title_short,
         'help' =>  t('Appears in: @bundles', array('@bundles' => implode(', ', $bundles_names))),
         'argument' => array(
-         'field' => $column,
-         'handler' => $argument,
-         'field_name' => $field['field_name'],
-         'empty field name' => t('<No value>'),
+          'field' => $column,
+          'handler' => $argument,
+          'field_name' => $field['field_name'],
+          'empty field name' => t('<No value>'),
+          'cast to int' => $cast_to_int,
         ),
         'filter' => array(
           'field' => $column,
           'handler' => $filter,
           'field_name' => $field_name,
           'allow empty' => TRUE,
+          'cast to int' => $cast_to_int,
         ),
       );
       if (!empty($allow_sort)) {
