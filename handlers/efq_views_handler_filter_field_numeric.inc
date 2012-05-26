@@ -84,17 +84,12 @@ class efq_views_handler_filter_field_numeric extends views_handler_filter_numeri
   }
 
   function op_simple($column) {
-    $delta = is_numeric($this->options['delta']) ? $this->options['delta'] : NULL;
-    $this->query->query->fieldCondition($this->definition['field_name'], $column, $this->value['value'], $this->operator, $delta);
+    $value = efq_views_op_prepare($this, $this->value['value'], $delta);
+    $this->query->query->fieldCondition($this->definition['field_name'], $column, $value, $this->operator, $delta);
   }
 
   function op_between($column) {
-    $delta = is_numeric($this->options['delta']) ? $this->options['delta'] : NULL;
-    $this->query->query->fieldCondition($this->definition['field_name'], $column, array($this->value['min'], $this->value['max']), "BETWEEN", $delta);
+    $value = efq_views_op_prepare($this, array($this->value['min'], $this->value['max']), $delta);
+    $this->query->query->fieldCondition($this->definition['field_name'], $column, $value, "BETWEEN", $delta);
   }
-
-  /**
-   * NULL comparisons are not supported
-   */
-  function op_empty($field) {}
 }
