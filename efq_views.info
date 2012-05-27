@@ -52,3 +52,4 @@ files[] = handlers/efq_views_handler_argument_field_string.inc
 
 files[] = handlers/efq_views_handler_filter_field_list.inc
 files[] = handlers/efq_views_handler_filter_in_operator.inc
+files[] = handlers/efq_views_handler_filter_numeric.inc
