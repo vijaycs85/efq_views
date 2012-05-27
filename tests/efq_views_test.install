@@ -10,7 +10,7 @@ function efq_views_test_schema() {
         'unsigned' => TRUE,
         'not null' => TRUE,
       ),
-      'bundle' => array(
+      'ebundle' => array(
         'description' => 'The bundle of this entity.',
         'type' => 'varchar',
         'length' => 32,
@@ -24,7 +24,7 @@ function efq_views_test_schema() {
         'not null' => TRUE,
         'default' => '',
       ),
-      'label' => array(
+      'elabel' => array(
         'description' => 'The label of this entity.',
         'type' => 'varchar',
         'length' => 255,

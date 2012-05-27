@@ -89,8 +89,8 @@ class EFQViewsFieldTestCase extends EFQViewsTestCase {
   }
   protected $entities_array = array(
     array(
-      'bundle' => 'bundle1',
-      'label' => 'test label 1',
+      'ebundle' => 'bundle1',
+      'elabel' => 'test label 1',
       'uid' => 1,
       'test_boolean' => TRUE,
       'test_integer' => 15,
@@ -101,8 +101,8 @@ class EFQViewsFieldTestCase extends EFQViewsTestCase {
       'field_boolean' => array(LANGUAGE_NONE => array(array('value' => 1))),
     ),
     array(
-      'bundle' => 'bundle1',
-      'label' => 'string label 2',
+      'ebundle' => 'bundle1',
+      'elabel' => 'string label 2',
       'uid' => 1,
       'test_boolean' => FALSE,
       'test_integer' => 17,
@@ -142,10 +142,13 @@ class EFQViewsFieldTestCase extends EFQViewsTestCase {
       $entity = $this->entities[$key];
       $this->assertPattern("/Entity ID: +$entity->eid/", 'Entity ID found');
     }
-    // Integer property. Each test array contains: value, operator, entity keys to be found.
+    // Integer property. Each test array is a list of: value, operator,
+    // entity keys to be found.
     $tests = array(
       array('15', '=', 0),
       array('16', '='),
+      array('15', NULL, 0),
+      array('16', NULL),
       array('15', '>', 1),
       array('15', '<'),
       array('15', '<=', 0),
@@ -171,7 +174,9 @@ class EFQViewsFieldTestCase extends EFQViewsTestCase {
       $handler->display->display_options['filters']['test_integer']['id'] = 'test_integer';
       $handler->display->display_options['filters']['test_integer']['table'] = 'efq_efq_views_test';
       $handler->display->display_options['filters']['test_integer']['field'] = 'test_integer';
-      $handler->display->display_options['filters']['test_integer']['operator'] = $operator;
+      if (isset($operator)) {
+        $handler->display->display_options['filters']['test_integer']['operator'] = $operator;
+      }
       $handler->display->display_options['filters']['test_integer']['value'] = $value;
       $this->runView($view);
       $this->assertEqual(count($view->result), count($test));
@@ -193,12 +198,17 @@ class EFQViewsFieldTestCase extends EFQViewsTestCase {
       $entity = $this->entities[$key];
       $this->assertPattern("/Entity ID: +$entity->eid/", 'Entity ID found');
     }
-    // Label. Each test array contains: value, operator, entity keys to be found.
+    // Label. Each test array is a list of: value, operator, entity keys to
+    // be found.
     $tests = array(
       array('test', 'STARTS_WITH', 0),
       array('label', 'CONTAINS', 0, 1),
       array('banana', 'STARTS_WITH'),
       array('banana', 'CONTAINS'),
+      array('test label 1', '=', 0),
+      array('test label 1', NULL, 0),
+      array('test label 2', '='),
+      array('test label 2', NULL),
     );
     foreach ($tests as $test) {
       $value = array_shift($test);
@@ -209,7 +219,9 @@ class EFQViewsFieldTestCase extends EFQViewsTestCase {
       $handler->display->display_options['filters']['label']['id'] = 'label';
       $handler->display->display_options['filters']['label']['table'] = 'efq_efq_views_test';
       $handler->display->display_options['filters']['label']['field'] = 'label';
-      $handler->display->display_options['filters']['label']['operator'] = $operator;
+      if (isset($operator)) {
+        $handler->display->display_options['filters']['label']['operator'] = $operator;
+      }
       $handler->display->display_options['filters']['label']['value'] = $value;
       $this->runView($view);
       $this->assertEqual(count($view->result), count($test));

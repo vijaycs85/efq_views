@@ -20,8 +20,8 @@ function efq_views_test_entity_info() {
       'fieldable' => TRUE,
       'entity keys' => array(
         'id' => 'eid',
-        'bundle' => 'bundle',
-        'label' => 'label',
+        'bundle' => 'ebundle',
+        'label' => 'elabel',
       ),
       'bundle keys' => array(
         'bundle' => 'bundle',
