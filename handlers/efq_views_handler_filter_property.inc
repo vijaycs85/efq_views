@@ -53,7 +53,7 @@ class efq_views_handler_filter_property extends views_handler_filter {
         'short' => t('='),
         'values' => 1,
       ),
-      '!=' => array(
+      '<>' => array(
         'title' => t('Is not equal to'),
         'method' => 'op_simple',
         'short' => t('!='),

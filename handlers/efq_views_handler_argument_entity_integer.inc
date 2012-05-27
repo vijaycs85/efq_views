@@ -18,7 +18,7 @@ class efq_views_handler_argument_entity_integer extends views_handler_argument_n
       $this->query->query->entityCondition($this->real_field, array_map('intval', $this->value), $operator);
     }
     else {
-      $operator = empty($this->options['not']) ? '=' : '!=';
+      $operator = empty($this->options['not']) ? '=' : '<>';
       $this->query->query->entityCondition($this->real_field, (int) $this->argument, $operator);
     }
   }

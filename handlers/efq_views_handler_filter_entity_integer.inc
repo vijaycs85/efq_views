@@ -29,7 +29,7 @@ class efq_views_handler_filter_entity_integer extends views_handler_filter_numer
         'short' => t('='),
         'values' => 1,
       ),
-      '!=' => array(
+      '<>' => array(
         'title' => t('Is not equal to'),
         'method' => 'op_simple',
         'short' => t('!='),

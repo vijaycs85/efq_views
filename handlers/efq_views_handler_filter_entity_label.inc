@@ -21,7 +21,7 @@ class efq_views_handler_filter_entity_label extends views_handler_filter_string 
         'method' => 'op_equal',
         'values' => 1,
       ),
-      '!=' => array(
+      '<>' => array(
         'title' => t('Is not equal to'),
         'short' => t('!='),
         'method' => 'op_equal',
