@@ -23,8 +23,6 @@ files[] = handlers/efq_views_handler_argument_entity_integer.inc
 files[] = handlers/efq_views_handler_argument_entity_label.inc
 
 files[] = handlers/efq_views_handler_argument_entity_type.inc
-files[] = handlers/efq_views_handler_filter_entity_type.inc
-files[] = handlers/efq_views_handler_argument_entity_type.inc
 
 files[] = handlers/efq_views_handler_argument_entity_bundle.inc
 files[] = handlers/efq_views_handler_filter_entity_bundle.inc
