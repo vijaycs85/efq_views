@@ -315,32 +315,7 @@ function _efq_views_get_field_data($entity_type, $info) {
  * @param $entity_type Entity type for which the properties are being loaded.
  * @param $info Entity info array for the given entity type.
  */
-function _efq_views_get_property_data($entity_type = NULL, $info = NULL) {
-  $data['property'] = array(
-    'group' => t('Property'),
-    'title' => t('Property'),
-    'help' => t('Entity-specific property.'),
-    'field' => array(
-      'click sortable' => TRUE,
-      'handler' => 'efq_views_handler_field_property',
-    ),
-    'filter' => array(
-      'handler' => 'efq_views_handler_filter_property',
-    ),
-    'sort' => array(
-      'handler' => 'efq_views_handler_sort_property',
-    ),
-    'argument' => array(
-     'handler' => 'efq_views_handler_argument_property',
-    ),
-  );
-
-  // No single entity_type specified, we can't find more info
-  // through the entity definition. So, return what we have so far.
-  if (!isset($entity_type)) {
-    return $data;
-  }
-
+function _efq_views_get_property_data($entity_type, $info) {
   $metadata = entity_get_property_info($entity_type);
   // No metadata available for this entity type.
   if (!isset($metadata['properties'])) {
