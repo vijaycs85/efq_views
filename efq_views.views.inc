@@ -387,7 +387,7 @@ function _efq_views_get_property_data($entity_type, $info) {
         break;
       case 'uri':
         // URIs aren't stored in the database, no need for additional handlers.
-        $field = 'efq_views_handler_field_property_uri';
+        $field = 'entity_views_handler_field_uri';
         break;
       case 'token':
       case 'text':
