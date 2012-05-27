@@ -16,7 +16,6 @@ function efq_views_test_entity_info() {
       'entity class' => 'EFQViewsTestEntityClass',
       'controller class' => 'EntityAPIController',
       'uri callback' => 'entity_class_uri',
-      'label callback' => 'entity_class_label',
       'load hook' => 'example_task_load',
       'fieldable' => TRUE,
       'entity keys' => array(

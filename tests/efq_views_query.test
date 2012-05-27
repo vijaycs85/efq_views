@@ -102,7 +102,7 @@ class EFQViewsFieldTestCase extends EFQViewsTestCase {
     ),
     array(
       'bundle' => 'bundle1',
-      'label' => 'test label 1',
+      'label' => 'string label 2',
       'uid' => 1,
       'test_boolean' => FALSE,
       'test_integer' => 17,
@@ -142,7 +142,7 @@ class EFQViewsFieldTestCase extends EFQViewsTestCase {
       $entity = $this->entities[$key];
       $this->assertPattern("/Entity ID: +$entity->eid/", 'Entity ID found');
     }
-    // Integer property. Tests are: value, operator, entity keys to be found.
+    // Integer property. Each test array contains: value, operator, entity keys to be found.
     $tests = array(
       array('15', '=', 0),
       array('16', '='),
@@ -193,7 +193,33 @@ class EFQViewsFieldTestCase extends EFQViewsTestCase {
       $entity = $this->entities[$key];
       $this->assertPattern("/Entity ID: +$entity->eid/", 'Entity ID found');
     }
+    // Label. Each test array contains: value, operator, entity keys to be found.
+    $tests = array(
+      array('test', 'STARTS_WITH', 0),
+      array('label', 'CONTAINS', 0, 1),
+      array('banana', 'STARTS_WITH'),
+      array('banana', 'CONTAINS'),
+    );
+    foreach ($tests as $test) {
+      $value = array_shift($test);
+      $operator = array_shift($test);
+      $this->pass("test $value $operator");
+      $view = $this->view();
+      $handler = $view->display['default']->handler;
+      $handler->display->display_options['filters']['label']['id'] = 'label';
+      $handler->display->display_options['filters']['label']['table'] = 'efq_efq_views_test';
+      $handler->display->display_options['filters']['label']['field'] = 'label';
+      $handler->display->display_options['filters']['label']['operator'] = $operator;
+      $handler->display->display_options['filters']['label']['value'] = $value;
+      $this->runView($view);
+      $this->assertEqual(count($view->result), count($test));
+      foreach ($test as $key) {
+        $entity = $this->entities[$key];
+        $this->assertPattern("/Entity ID: +$entity->eid/", 'Entity ID found');
+      }
+    }
   }
+
 }
 
 class EFQViewsNodeLinkTestCase extends EFQViewsTestCase {

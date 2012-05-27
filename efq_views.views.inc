@@ -125,7 +125,9 @@ function _efq_views_get_entity_data($entity_type = NULL, $info = NULL) {
     ),
   );
   // We can only do click sorting and filters/sorts/arguments when the label is
-  // stored in the database, instead of being generated in a callback.
+  // stored in the database, instead of being generated in a callback. As
+  // labels are not supported by entityCondition/entityOrderBy, treat them as
+  // property for filtering and sorting.
   if (isset($info['entity keys']['label']) && !isset($info['label callback'])) {
     $data['label']['field'] = array(
       'click sortable' => TRUE,
@@ -133,16 +135,16 @@ function _efq_views_get_entity_data($entity_type = NULL, $info = NULL) {
       'label column' => $info['entity keys']['label'],
     );
     $data['label']['filter'] = array(
-      'handler' => 'efq_views_handler_filter_entity_label',
-      'label column' => $info['entity keys']['label'],
+      'handler' => 'efq_views_handler_filter_property_string',
+      'field' => $info['entity keys']['label'],
     );
     $data['label']['sort'] = array(
-      'handler' => 'efq_views_handler_sort_entity_label',
-      'label column' => $info['entity keys']['label'],
+      'handler' => 'efq_views_handler_sort_property_string',
+      'field' => $info['entity keys']['label'],
     );
     $data['label']['argument'] = array(
-      'handler' => 'efq_views_handler_argument_entity_label',
-      'label column' => $info['entity keys']['label'],
+      'handler' => 'efq_views_handler_argument_property_string',
+      'field' => $info['entity keys']['label'],
     );
   }
 
