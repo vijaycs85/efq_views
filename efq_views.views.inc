@@ -318,6 +318,7 @@ function _efq_views_get_field_data($entity_type, $info) {
  * @param $info Entity info array for the given entity type.
  */
 function _efq_views_get_property_data($entity_type, $info) {
+  $data = array();
   $metadata = entity_get_property_info($entity_type);
   // No metadata available for this entity type.
   if (!isset($metadata['properties'])) {
