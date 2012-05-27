@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 /**
  * Integer argument handler for entity keys.

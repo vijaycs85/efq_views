@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 /**
  * String Argument handler for entity properties.

@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 /**
  * String filter for fields.

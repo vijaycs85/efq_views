@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 /**
  * Handle matching of multiple options selectable via checkboxes

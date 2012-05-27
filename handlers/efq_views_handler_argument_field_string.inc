@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 /**
  * String argument handler for fields.

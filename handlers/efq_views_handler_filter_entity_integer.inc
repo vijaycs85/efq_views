@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 /**
  * Integer filter for entity keys.
