@@ -118,7 +118,7 @@ function _efq_views_get_entity_data($entity_type = NULL, $info = NULL) {
       'field' => $info['entity keys']['label'],
     );
     $data['label']['sort'] = array(
-      'handler' => 'efq_views_handler_sort_property_string',
+      'handler' => 'efq_views_handler_sort_property',
       'field' => $info['entity keys']['label'],
     );
     $data['label']['argument'] = array(
