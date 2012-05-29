@@ -33,6 +33,7 @@ files[] = handlers/efq_views_handler_filter_property_boolean.inc
 files[] = handlers/efq_views_handler_filter_property_date.inc
 files[] = handlers/efq_views_handler_argument_property_numeric.inc
 files[] = handlers/efq_views_handler_argument_property_string.inc
+files[] = handlers/efq_views_handler_sort_property.inc
 
 files[] = handlers/efq_views_handler_field_field.inc
 files[] = handlers/efq_views_handler_filter_field_in_operator.inc
