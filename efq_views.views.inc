@@ -463,6 +463,19 @@ function efq_views_views_plugins_alter(&$plugins) {
   $plugins['row']['comment']['base'][] = "efq_comment";
 }
 
+/**
+ * Cast values to int if necessary and create delta.
+ *
+ * @param $handler
+ *   The Views handler object.
+ * @param $value
+ *   The value for the operation. Can be a scalar or an array.
+ * @param $delta
+ *   The input value is disregarded, it's only used for returning delta.
+ *
+ * @return
+ *   Same as $value, casted to int if necessary.
+ */
 function efq_views_op_prepare($handler, $value, &$delta = NULL) {
   if (isset($handler->options['delta']) && is_numeric($handler->options['delta'])) {
     $delta = (int) $handler->options['delta'];
