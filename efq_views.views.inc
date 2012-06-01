@@ -355,7 +355,8 @@ function _efq_views_get_property_data($entity_type, $info) {
         break;
       case 'boolean':
         // Views proper doesn't let boolean fields have argument handlers,
-        // so neither do we.
+        // so we do not support that for properties. (Boolean field API
+        // fields are actually stored as an integer so that will work.)
         $field = 'efq_views_handler_field_property_boolean';
         $filter = 'efq_views_handler_filter_property_boolean';
         $argument = NULL;
