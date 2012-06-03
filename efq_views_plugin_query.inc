@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 class efq_views_plugin_query extends views_plugin_query {
   /**
@@ -19,6 +18,7 @@ class efq_views_plugin_query extends views_plugin_query {
     parent::init($base_table, $base_field, $options);
 
     $this->query = new EntityFieldQuery;
+    $this->tables = array();
 
     // An entity type (such as EntityFieldQuery: Node) was selected.
     // We have entity type passed in as base table, prefixed with 'efq_'
@@ -96,6 +96,13 @@ class efq_views_plugin_query extends views_plugin_query {
    */
   function add_field($base_table, $base_field) {
     return $base_field;
+  }
+
+  /**
+   * This is used by the field field handler.
+   */
+  function ensure_my_table($table) {
+    return $table;
   }
 
   /**

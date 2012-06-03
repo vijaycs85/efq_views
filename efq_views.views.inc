@@ -179,6 +179,9 @@ function _efq_views_get_field_data($entity_type, $info) {
         'handler' => 'efq_views_handler_field_field',
         'field_name' => $field_name,
         'entity_type' => $entity_type,
+        // These are used by Views' field field handler.
+        'entity_tables' => array('efq_' . $info['base table'] => $entity_type),
+        'table' => $field_name,
       ),
     );
 

@@ -31,11 +31,6 @@ class efq_views_handler_field_entity_label extends views_handler_field {
   }
 
   /**
-   * Override the parent's query method, since it doesn't need to do anything.
-   */
-  function query() {}
-
-  /**
    * Render whatever the data is as a link to the entity.
    *
    * Data should be made XSS safe prior to calling this function.
