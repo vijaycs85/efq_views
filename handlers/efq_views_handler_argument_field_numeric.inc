@@ -4,7 +4,7 @@
  * Numeric argument handler for fields.
  */
 class efq_views_handler_argument_field_numeric extends views_handler_argument_numeric {
-  function query() {
+  function query($group_by = false) {
     if (!empty($this->options['break_phrase'])) {
       views_break_phrase($this->argument, $this);
     }

@@ -4,7 +4,7 @@
  * Numeric argument handler for entity properties.
  */
 class efq_views_handler_argument_property_numeric extends views_handler_argument_numeric {
-  function query() {
+  function query($group_by = false) {
     if (!empty($this->options['break_phrase'])) {
       views_break_phrase($this->argument, $this);
     }

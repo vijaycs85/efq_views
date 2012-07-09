@@ -232,9 +232,15 @@ function _efq_views_get_field_data($entity_type, $info) {
           break;
       }
       unset($definition);
-      if ($field['module'] == 'list') {
-        $filter = 'efq_views_handler_filter_field_list';
-        $definition = &$data[$field_name];
+      switch ($field['module']) {
+        case 'list':
+          $filter = 'efq_views_handler_filter_field_list';
+          $definition = &$data[$field_name];
+          break;
+        case 'taxonomy':
+          $filter = 'efq_views_handler_filter_term_reference';
+          $cast_to_int = 1;
+          break;
       }
       $single_column = count($field['columns']) == 1;
 

@@ -101,7 +101,7 @@ class efq_views_plugin_query extends views_plugin_query {
   /**
    * This is used by the field field handler.
    */
-  function ensure_my_table($table) {
+  function ensure_table($table) {
     return $table;
   }
 
@@ -191,8 +191,9 @@ class efq_views_plugin_query extends views_plugin_query {
     $view->execute_time = microtime(true) - $start;
   }
 
-  function get_result_entities($results) {
+  function get_result_entities($results, $relationship = NULL) {
     $entity = reset($results);
     return array($entity->entity_type, $results);
   }
+
 }
