@@ -10,15 +10,18 @@ class efq_views_handler_argument_entity_integer extends views_handler_argument_n
     }
     else {
       $this->value = array($this->argument);
+      $this->operator = 'and';
     }
 
-    if (count($this->value) > 1) {
+    if (count($this->value) > 1 && $this->operator == 'or') {
       $operator = empty($this->options['not']) ? 'IN' : 'NOT IN';
       $this->query->query->entityCondition($this->real_field, array_map('intval', $this->value), $operator);
     }
     else {
       $operator = empty($this->options['not']) ? '=' : '<>';
-      $this->query->query->entityCondition($this->real_field, (int) $this->argument, $operator);
+      foreach ($this->value as $value) {
+        $this->query->query->entityCondition($this->real_field, (int) $value, $operator);
+      }
     }
   }
 }

@@ -10,15 +10,18 @@ class efq_views_handler_argument_property_numeric extends views_handler_argument
     }
     else {
       $this->value = array($this->argument);
+      $this->operator = 'and';
     }
 
-    if (count($this->value) > 1) {
+    if (count($this->value) > 1 && $this->operator == 'or') {
       $operator = empty($this->options['not']) ? 'IN' : 'NOT IN';
       $this->query->query->propertyCondition($this->real_field, efq_views_op_prepare($this, $this->value), $operator);
     }
     else {
       $operator = empty($this->options['not']) ? '=' : '!=';
-      $this->query->query->propertyCondition($this->real_field, efq_views_op_prepare($this, $this->argument), $operator);
+      foreach ($this->value as $value) {
+        $this->query->query->propertyCondition($this->real_field, efq_views_op_prepare($this, $value), $operator);
+      }
     }
   }
 }

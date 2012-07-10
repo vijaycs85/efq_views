@@ -239,6 +239,7 @@ function _efq_views_get_field_data($entity_type, $info) {
           break;
         case 'taxonomy':
           $filter = 'efq_views_handler_filter_term_reference';
+          $argument = 'efq_views_handler_argument_field_numeric';
           $cast_to_int = 1;
           break;
       }
