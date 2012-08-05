@@ -163,13 +163,12 @@ class efq_views_plugin_query extends views_plugin_query {
       $results = $query->execute();
 
       foreach ($results as $entity_type => $ids) {
-        $entities = entity_load($entity_type, array_keys($ids));
-
         // This is later used for field rendering
-        foreach ($entities as $entity_id => $entity) {
-          $entities[$entity_id]->entity_type = $entity_type;
+        foreach (entity_load($entity_type, array_keys($ids)) as $entity_id => $entity) {
+          $entity->entity_id = $entity_id;
+          $entity->entity_type = $entity_type;
+          $view->result[] = $entity;
         }
-        $view->result += $entities;
       }
 
       $this->pager->post_execute($view->result);
