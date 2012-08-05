@@ -27,12 +27,14 @@ abstract class EFQViewsTestCase extends DrupalWebTestCase {
     ),
   );
   protected function setUp() {
-    if (module_exists('mongodb')) {
+    if (module_exists('mongodb') || (($module_data = system_rebuild_module_data()) && isset($module_data['mongodb']))) {
       variable_set('field_storage_default', 'mongodb_field_storage');
       parent::setUp('mongodb_field_storage', 'efq_views_test');
+      $this->pass('Running MongoDB');
     }
     else {
       parent::setUp('efq_views_test');
+      $this->pass('Running MySQL');
     }
     if (empty($this->postponeFields)) {
       $this->saveFieldsEntities();
