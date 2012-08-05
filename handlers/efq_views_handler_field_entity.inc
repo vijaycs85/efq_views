@@ -73,7 +73,17 @@ class efq_views_handler_field_entity extends views_handler_field {
       'revision_id' => $entity_info['entity keys']['revision'],
       'bundle' => $entity_info['entity keys']['bundle'],
     );
-    $field = $id_map[$this->field];
-    return $this->render_link(check_plain($values->{$field}), $values);
+
+    if ($this->field == 'bundle_label') {
+      $value = $values->{$id_map['bundle']};
+      if (isset($entity_info['bundles'][$value]['label'])) {
+        $value = $entity_info['bundles'][$value]['label'];
+      }
+    }
+    else {
+      $value = $values->{$id_map[$this->field]};
+    }
+
+    return $this->render_link(check_plain($value), $values);
   }
 }

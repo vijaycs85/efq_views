@@ -74,9 +74,12 @@ abstract class EFQViewsTestCase extends DrupalWebTestCase {
       'uid',
       'url',
       'field_boolean',
+      'bundle',
+      'bundle_label',
+      'label',
     );
     foreach ($fields as $field) {
-      $handler->display->display_options['fields'][$field] = array (
+      $handler->display->display_options['fields'][$field] = array(
         'id' => $field,
         'field' => $field,
         'table' => 'efq_efq_views_test',
@@ -136,6 +139,9 @@ class EFQViewsFieldTestCase extends EFQViewsTestCase {
     $url = url("custom/$entity->uid", array('absolute' => TRUE));
     $this->assertPattern('/URL: +' . preg_quote(l($url, $url), '/') . '/', 'URL found');
     $this->assertPattern('/field boolean: +On/', 'Boolean field API field found');
+    $this->assertPattern('/Bundle: +' . $entity->ebundle . '/', 'Bundle field found');
+    $this->assertPattern('/Bundle label: +' . preg_quote(t('Bundle 1'), '/') . '/', 'Bundle label field found');
+    $this->assertPattern('/Label: +' . preg_quote($entity->elabel, '/') . '/', 'Label field found');
   }
 }
 
@@ -567,7 +573,7 @@ class EFQViewsTermTestCase extends EFQViewsTestCase {
 }
 
 class EFQViewsNodeLinkTestCase extends EFQViewsTestCase {
-   static function getInfo() {
+  static function getInfo() {
     return array(
       'name' => 'EFQ Views node link',
       'description' => 'Tests EFQ Views sees a Views-defined special field.',

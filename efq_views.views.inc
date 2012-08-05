@@ -94,6 +94,16 @@ function _efq_views_get_entity_data($entity_type = NULL, $info = NULL) {
     ),
   );
 
+  $data['bundle_label'] = array(
+    'group' => t('Entity'),
+    'title' => t('Bundle label'),
+    'help' => t('The entity bundle label (for example, "Article", "Basic page", etc for nodes).'),
+    'field' => array(
+      'click sortable' => FALSE,
+      'handler' => 'efq_views_handler_field_entity',
+    ),
+  );
+
   $data['label'] = array(
     'group' => t('Entity'),
     'title' => t('Label'),
