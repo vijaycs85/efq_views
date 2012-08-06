@@ -6,6 +6,7 @@
 function efq_views_views_data() {
   $data['efq']['table']['group'] = t('EntityFieldQuery');
 
+  $entity_views_data = entity_views_data();
   // Add a EFQ base table for each defined entity
   foreach (entity_get_info() as $type => $info) {
     $data['efq_' . $type]['table']['base'] = array(
@@ -17,7 +18,7 @@ function efq_views_views_data() {
     $data['efq_' . $type]['table']['entity type'] = $type;
     $data['efq_' . $type] += _efq_views_get_entity_data($type, $info);
     $data['efq_' . $type] += _efq_views_get_field_data($type, $info);
-    $data['efq_' . $type] += _efq_views_get_property_data($type, $info);
+    $data['efq_' . $type] += _efq_views_get_property_data($type, $info, $entity_views_data);
 
     // Entity: Bundle is not supported for these two entity types.
     if ($type == 'comment' || $type == 'taxonomy_term') {
@@ -316,7 +317,7 @@ function _efq_views_get_field_data($entity_type, $info) {
  * @param $entity_type Entity type for which the properties are being loaded.
  * @param $info Entity info array for the given entity type.
  */
-function _efq_views_get_property_data($entity_type, $info) {
+function _efq_views_get_property_data($entity_type, $info, $entity_views_data) {
   $data = array();
   $metadata = entity_get_property_info($entity_type);
   // No metadata available for this entity type.
@@ -351,25 +352,20 @@ function _efq_views_get_property_data($entity_type, $info) {
   }
 
   // Get individual properties using Entity Metadata
-  $supported_types = array('integer', 'decimal', 'duration', 'date', 'text', 'token', 'boolean', 'uri');
   foreach ($metadata['properties'] as $property => $property_info) {
-    // Only allow the properties whose type we know how to handle
-    if (isset($property_info['type']) && !in_array($property_info['type'], $supported_types)) {
-      continue;
-    }
-
     // Avoid generating a million notices.
     $property_info += array('type' => '');
     $cast_to_int = FALSE;
+    $filter = '';
+    $argument = '';
 
     // Identify likely handlers for each property, based on property type.
     switch ($property_info['type']) {
       case 'integer':
-        $field = 'efq_views_handler_field_property_numeric';
         $cast_to_int = TRUE;
+        // Deliberate no break.
       case 'decimal':
       case 'duration':
-        $field = 'efq_views_handler_field_property_numeric';
         $filter = 'efq_views_handler_filter_property_numeric';
         $argument = 'efq_views_handler_argument_property_numeric';
         break;
@@ -377,29 +373,21 @@ function _efq_views_get_property_data($entity_type, $info) {
         // Views proper doesn't let boolean fields have argument handlers,
         // so we do not support that for properties. (Boolean field API
         // fields are actually stored as an integer so that will work.)
-        $field = 'efq_views_handler_field_property_boolean';
         $filter = 'efq_views_handler_filter_property_boolean';
         $argument = NULL;
         break;
       case 'date':
-        $field = 'efq_views_handler_field_property_date';
         $filter = 'efq_views_handler_filter_property_date';
         $argument = NULL;
         break;
-      case 'uri':
-        // URIs aren't stored in the database, no need for additional handlers.
-        $field = 'entity_views_handler_field_uri';
-        break;
       case 'token':
       case 'text':
-      default:
+      case 'uri':
         if (isset($property_info['options list'])) {
-          $field = 'efq_views_handler_field_property_text';
           $filter = 'efq_views_handler_filter_property_in_operator';
           $argument = 'efq_views_handler_argument_property_string';
           break;
         }
-        $field = 'efq_views_handler_field_property_text';
         $filter = 'efq_views_handler_filter_property_string';
         $argument = 'efq_views_handler_argument_property_string';
         break;
@@ -411,38 +399,34 @@ function _efq_views_get_property_data($entity_type, $info) {
       $group_name = t('Content');
     }
 
-    $data[$property] = array(
-      'group' => $group_name,
-      'title' => $property_info['label'],
-      'help' =>  $property_info['description'],
-      'field' => array(
-        'type' => $entity_type,
-        'click sortable' => FALSE,
-        'handler' => $field,
-      ),
-    );
-
-    // This property is a db column, we can do fun stuff with it.
-    if (in_array($property, $info['schema_fields_sql']['base table'])) {
-      $data[$property]['field'] = array(
-        'type' => $entity_type,
-        'click sortable' => TRUE,
-        'handler' => $field,
+    $base_index = empty($property_info['entity views field']) ? 'entity_' . $entity_type : 'views_entity_'. $entity_type;
+    if (isset($entity_views_data[$base_index][$property]['field']) || $filter || $argument || in_array($property, $info['schema_fields_sql']['base table'])) {
+      $data[$property] = array(
+        'group' => $group_name,
+        'title' => $property_info['label'],
       );
-      $data[$property]['filter'] = array(
-        'handler' => $filter,
-        'options callback' => isset($property_info['options list']) ? $property_info['options list'] : NULL,
-        'cast to int' => $cast_to_int,
-      );
-      $data[$property]['sort'] = array(
-        'handler' => 'efq_views_handler_sort_property',
-      );
-
-      if (isset($argument)) {
+      if (isset($property_info['description'])) {
+        $data[$property]['help'] = $property_info['description'];
+      }
+      if (isset($entity_views_data[$base_index][$property]['field'])) {
+        $data[$property]['field'] = $entity_views_data[$base_index][$property]['field'];
+      }
+      if ($filter) {
+        $data[$property]['filter'] = array(
+          'handler' => $filter,
+          'options callback' => isset($property_info['options list']) ? $property_info['options list'] : NULL,
+          'cast to int' => $cast_to_int,
+        );
+      }
+      if ($argument) {
         $data[$property]['argument'] = array(
           'handler' => $argument,
           'cast to int' => $cast_to_int,
         );
+      }
+      // This property is a db column, we can sort it.
+      if (in_array($property, $info['schema_fields_sql']['base table'])) {
+        $data[$property]['sort']['handler'] = 'efq_views_handler_sort_property';
       }
     }
   }

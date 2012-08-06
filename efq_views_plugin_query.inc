@@ -194,5 +194,7 @@ class efq_views_plugin_query extends views_plugin_query {
     $entity = reset($results);
     return array($entity->entity_type, $results);
   }
-
+  function add_selector_orderby($selector, $order = 'ASC') {
+    // @TODO.
+  }
 }
