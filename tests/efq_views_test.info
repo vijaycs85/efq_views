@@ -3,5 +3,4 @@ description = EFQ Views Backend Test
 core = 7.x
 package = Views
 dependencies[] = efq_views
-files[] = efq_views_basic.test
 files[] = efq_views_query.test
