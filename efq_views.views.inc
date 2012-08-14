@@ -11,11 +11,16 @@ function efq_views_views_data() {
     }
     if (_efq_views_copy_data($data, $entity_type, $key, $entity_data)) {
       $metadata = entity_get_property_info($entity_type);
+      $fields = array();
+      // Collect the fields.
+      foreach (field_info_instances($entity_type) as $bundle => $field_data) {
+        $fields += array_flip(array_keys($field_data));
+      }
       $info = $entity_info[$entity_type];
       foreach ($data['efq_' . $entity_type] as $index => &$views_data) {
         unset($views_data['relationship']);
-        if (isset($views_data['field']['field_name']) || isset($views_data['real field'])) {
-          _efq_views_get_field_handlers($views_data);
+        if (isset($fields[$index]) || isset($views_data['real field'])) {
+          _efq_views_get_field_handlers($views_data, $index);
         }
         else {
           _efq_views_get_property_handlers($views_data, $index, $metadata, $info);
@@ -170,12 +175,9 @@ function _efq_views_get_entity_data($entity_type, $info) {
  *
  * Based on field_views_field_default_views_data() from field.views.inc
  */
-function _efq_views_get_field_handlers(&$views_data) {
-  if (isset($views_data['field']['field_name'])) {
-    $field_name = $views_data['field']['field_name'];
-    $column = FALSE;
-  }
-  else {
+function _efq_views_get_field_handlers(&$views_data, $field_name) {
+  $column = FALSE;
+  if (isset($views_data['real field'])) {
     list($field_name, $column) = explode(':', $views_data['real field']);
   }
   $field = field_info_field($field_name);
@@ -209,7 +211,6 @@ function _efq_views_get_field_handlers(&$views_data) {
         $argument = 'efq_views_handler_argument_field_string';
         break;
     }
-    unset($definition);
     switch ($field['module']) {
       case 'list':
         $filter = 'efq_views_handler_filter_field_list';
