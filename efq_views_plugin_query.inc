@@ -196,5 +196,12 @@ class efq_views_plugin_query extends views_plugin_query {
   }
   function add_selector_orderby($selector, $order = 'ASC') {
     // @TODO.
+    debug($selector);
+    $field_info = field_info_fields();
+    if (isset($field_info[$selector])) {
+      $columns = $field_info[$selector]['columns'];
+      $this->query->fieldOrderBy($selector, reset($columns), $order);
+      return;
+    }
   }
 }
