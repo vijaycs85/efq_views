@@ -195,13 +195,18 @@ class efq_views_plugin_query extends views_plugin_query {
     return array($entity->entity_type, $results);
   }
   function add_selector_orderby($selector, $order = 'ASC') {
-    // @TODO.
-    debug($selector);
-    $field_info = field_info_fields();
-    if (isset($field_info[$selector])) {
-      $columns = $field_info[$selector]['columns'];
-      $this->query->fieldOrderBy($selector, reset($columns), $order);
-      return;
+    $views_data = views_fetch_data($this->base_table);
+    $sort_data = $views_data[$selector]['sort'];
+    switch ($sort_data['handler']) {
+      case 'efq_views_handler_sort_entity':
+        $this->query->entityOrderBy($selector, $order);
+        break;
+      case 'efq_views_handler_sort_property':
+        $this->query->propertyOrderBy($selector, $order);
+        break;
+      case 'efq_views_handler_sort_field':
+        $this->query->fieldOrderBy($sort_data['field_name'], $sort_data['field'], $order);
+        break;
     }
   }
 }

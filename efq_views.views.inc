@@ -235,6 +235,7 @@ function _efq_views_get_field_handlers(&$views_data, $field_name) {
       'allow empty' => TRUE,
       'cast to int' => $cast_to_int,
     );
+    $views_data['field']['click sortable'] = $allow_sort;
     if (!empty($allow_sort)) {
       $views_data['sort'] = array(
         'field' => $column,
@@ -310,7 +311,11 @@ function _efq_views_get_property_handlers(&$views_data, $property, $metadata, $e
   }
   // This property is a db column, we can sort it.
   if (in_array($property, $entity_info['schema_fields_sql']['base table'])) {
+    $views_data['field']['click sortable'] = TRUE;
     $views_data['sort']['handler'] = 'efq_views_handler_sort_property';
+  }
+  else {
+    $views_data['field']['click sortable'] = FALSE;
   }
 }
 
