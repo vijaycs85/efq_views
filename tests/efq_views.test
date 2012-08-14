@@ -8,7 +8,7 @@
 /**
  * Abstract class for EFQ views testing.
  */
-abstract class EFQViewsTestCase extends DrupalWebTestCase {
+abstract class EFQViewsTestBase extends DrupalWebTestCase {
   protected $postponeFields = FALSE;
   protected $entities_array = array();
   protected $fields = array(
@@ -105,7 +105,7 @@ abstract class EFQViewsTestCase extends DrupalWebTestCase {
   }
 }
 
-class EFQViewsFieldTestCase extends EFQViewsTestCase {
+class EFQViewsFieldTestCase extends EFQViewsTestBase {
   static function getInfo() {
     return array(
       'name' => 'EFQ Views fields',
@@ -145,7 +145,7 @@ class EFQViewsFieldTestCase extends EFQViewsTestCase {
   }
 }
 
-class EFQViewsFilterTestCase extends EFQViewsTestCase {
+class EFQViewsFilterTestCase extends EFQViewsTestBase {
   static function getInfo() {
     return array(
       'name' => 'EFQ Views filters',
@@ -572,7 +572,7 @@ class EFQViewsTermTestCase extends EFQViewsTestCase {
   }
 }
 
-class EFQViewsNodeLinkTestCase extends EFQViewsTestCase {
+class EFQViewsNodeLinkTestCase extends EFQViewsTestBase {
   static function getInfo() {
     return array(
       'name' => 'EFQ Views node link',

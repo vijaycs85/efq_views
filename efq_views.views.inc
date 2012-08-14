@@ -4,29 +4,50 @@
  * Implements hook_views_data().
  */
 function efq_views_views_data() {
-  $data['efq']['table']['group'] = t('EntityFieldQuery');
-
-  $entity_views_data = entity_views_data();
-  // Add a EFQ base table for each defined entity
-  foreach (entity_get_info() as $type => $info) {
-    $data['efq_' . $type]['table']['base'] = array(
-      'title' => 'EntityFieldQuery: ' . $info['label'],
-      'help' => t('Uses EntityFieldQuery for querying the !type entity type', array('!type' => $type)),
-      'query class' => 'efq_query',
-      'field' => $info['entity keys']['id'],
-    );
-    $data['efq_' . $type]['table']['entity type'] = $type;
-    $data['efq_' . $type] += _efq_views_get_entity_data($type, $info);
-    $data['efq_' . $type] += _efq_views_get_field_data($type, $info);
-    $data['efq_' . $type] += _efq_views_get_property_data($type, $info, $entity_views_data);
-
-    // Entity: Bundle is not supported for these two entity types.
-    if ($type == 'comment' || $type == 'taxonomy_term') {
-      unset($data['efq_' . $type]['bundle']);
+  $entity_info = entity_get_info();
+  foreach (entity_views_data() as $key => $entity_data) {
+    if ($key == 'entity__global') {
+      continue;
+    }
+    if (_efq_views_copy_data($data, $entity_type, $key, $entity_data)) {
+      $metadata = entity_get_property_info($entity_type);
+      $info = $entity_info[$entity_type];
+      foreach ($data['efq_' . $entity_type] as $index => &$views_data) {
+        unset($views_data['relationship']);
+        if (isset($views_data['field']['field_name']) || isset($views_data['real field'])) {
+          _efq_views_get_field_handlers($views_data);
+        }
+        else {
+          _efq_views_get_property_handlers($views_data, $index, $metadata, $info);
+        }
+      }
+      $data['efq_' . $entity_type]['table']['entity type'] = $entity_type;
+      $data['efq_' . $entity_type]['table']['base'] = array(
+        'title' => 'EntityFieldQuery: ' . $info['label'],
+        'help' => t('Uses EntityFieldQuery for querying the !type entity type', array('!type' => $entity_type)),
+        'query class' => 'efq_query',
+        'field' => $info['entity keys']['id'],
+      );
+      $data['efq_' . $entity_type] += _efq_views_get_entity_data($entity_type, $info);
     }
   }
-
   return $data;
+}
+
+function _efq_views_copy_data(&$data, &$entity_type, $key, $entity_data) {
+  if (substr($key, 0, 7) == 'entity_') {
+    $return = TRUE;
+    $entity_type = substr($key, 7);
+  }
+  elseif (substr($key, 0, 13) == 'views_entity_') {
+    $return = FALSE;
+    $entity_type = substr($key, 13);
+  }
+  if (!isset($data['efq_' . $entity_type])) {
+    $data['efq_' . $entity_type] = array();
+  }
+  $data['efq_' . $entity_type] += $entity_data;
+  return $return;
 }
 
 /**
@@ -37,7 +58,7 @@ function efq_views_views_data() {
  * @param $entity_type The selected entity type, if any.
  * @param $info Entity info array.
  */
-function _efq_views_get_entity_data($entity_type = NULL, $info = NULL) {
+function _efq_views_get_entity_data($entity_type, $info) {
   $data['entity_id'] = array(
     'group' => t('Entity'),
     'title' => t('Entity ID'),
@@ -74,26 +95,27 @@ function _efq_views_get_entity_data($entity_type = NULL, $info = NULL) {
      'handler' => 'efq_views_handler_argument_entity_integer',
     ),
   );
-
-  $data['bundle'] = array(
-    'group' => t('Entity'),
-    'title' => t('Bundle'),
-    'help' => t('The entity bundle (for example, "article", "page", etc for nodes).'),
-    'field' => array(
-      'click sortable' => TRUE,
-      'handler' => 'efq_views_handler_field_entity',
-    ),
-    'filter' => array(
-      'entity_type' => $entity_type,
-      'handler' => 'efq_views_handler_filter_entity_bundle',
-    ),
-    'sort' => array(
-      'handler' => 'efq_views_handler_sort_entity',
-    ),
-    'argument' => array(
-     'handler' => 'efq_views_handler_argument_entity_bundle',
-    ),
-  );
+  if ($entity_type != 'comment' && $entity_type != 'taxonomy_term') {
+    $data['bundle'] = array(
+      'group' => t('Entity'),
+      'title' => t('Bundle'),
+      'help' => t('The entity bundle (for example, "article", "page", etc for nodes).'),
+      'field' => array(
+        'click sortable' => TRUE,
+        'handler' => 'efq_views_handler_field_entity',
+      ),
+      'filter' => array(
+        'entity_type' => $entity_type,
+        'handler' => 'efq_views_handler_filter_entity_bundle',
+      ),
+      'sort' => array(
+        'handler' => 'efq_views_handler_sort_entity',
+      ),
+      'argument' => array(
+       'handler' => 'efq_views_handler_argument_entity_bundle',
+      ),
+    );
+  }
 
   $data['bundle_label'] = array(
     'group' => t('Entity'),
@@ -147,167 +169,79 @@ function _efq_views_get_entity_data($entity_type = NULL, $info = NULL) {
  * (or, if absent, all entity types).
  *
  * Based on field_views_field_default_views_data() from field.views.inc
- *
- * @param $entity_type The selected entity type, if any.
- * @param $info Entity info array.
  */
-function _efq_views_get_field_data($entity_type, $info) {
-  $data = array();
-  foreach (field_info_fields() as $field) {
-    // This field is not attached to any bundle of our content type.
-    if (isset($entity_type) && !isset($field['bundles'][$entity_type])) {
-      continue;
-    }
+function _efq_views_get_field_handlers(&$views_data) {
+  if (isset($views_data['field']['field_name'])) {
+    $field_name = $views_data['field']['field_name'];
+    $column = FALSE;
+  }
+  else {
+    list($field_name, $column) = explode(':', $views_data['real field']);
+  }
+  $field = field_info_field($field_name);
+  // This will be handled later when a real field props up.
+  if (count($field['columns']) > 1 && !$column) {
+    return;
+  }
+  foreach ($field['columns'] as $column => $attributes) {
+    $allow_sort = TRUE;
+    $cast_to_int = FALSE;
 
-    $bundles_names = array();
-    foreach ($field['bundles'] as $type => $bundles) {
-      foreach ($bundles as $bundle) {
-        $bundles_names[] = t('@entity:@bundle', array('@entity' => $type, '@bundle' => $bundle));
-      }
+    // Identify likely filters and arguments for each column based on field type.
+    switch ($attributes['type']) {
+      case 'int':
+      case 'mediumint':
+      case 'tinyint':
+      case 'bigint':
+      case 'serial':
+        $cast_to_int = TRUE;
+      case 'numeric':
+      case 'float':
+        $filter = 'efq_views_handler_filter_field_numeric';
+        $argument = 'efq_views_handler_argument_field_numeric';
+        break;
+      case 'text':
+      case 'blob':
+        // It does not make sense to sort by blob or text.
+        $allow_sort = FALSE;
+      default:
+        $filter = 'efq_views_handler_filter_field_string';
+        $argument = 'efq_views_handler_argument_field_string';
+        break;
     }
-    // Note: we don't have a label available here, because we are at the field
-    // level, not at the instance level. So we just go through all instances
-    // and take the one which is used the most frequently.
-    $field_name = $field['field_name'];
-    list($label, $all_labels) = field_views_field_label($field_name);
-
-    $group_name = isset($info) ? $info['label'] : t('Fields');
-    // Override Node to Content.
-    if ($group_name == t('Node')) {
-      $group_name = t('Content');
+    unset($definition);
+    switch ($field['module']) {
+      case 'list':
+        $filter = 'efq_views_handler_filter_field_list';
+        break;
+      case 'taxonomy':
+        $filter = 'efq_views_handler_filter_term_reference';
+        $argument = 'efq_views_handler_argument_field_numeric';
+        $cast_to_int = 1;
+        break;
     }
-
-    // This provides a Views field.
-    // Arguments/filters/sorts are provided per column per default but some
-    // types get handlers.
-    $data[$field_name] = array(
-      'group' => $group_name,
-      'title' => $label,
-      'title short' => $label,
-      'help' =>  t('Appears in: @bundles', array('@bundles' => implode(', ', $bundles_names))),
-      'field' => array(
-        'click sortable' => TRUE,
-        'handler' => 'efq_views_handler_field_field',
-        'field_name' => $field_name,
-        'entity_type' => $entity_type,
-        // These are used by Views' field field handler.
-        'entity_tables' => array('efq_' . $info['base table'] => $entity_type),
-        'table' => $field_name,
-      ),
+    $views_data['argument'] = array(
+      'field' => $column,
+      'handler' => $argument,
+      'field_name' => $field['field_name'],
+      'empty field name' => t('<No value>'),
+      'cast to int' => $cast_to_int,
     );
-
-    // Add an alias for each alternative field label.
-    $aliases = array();
-    $also_known = array();
-    foreach ($all_labels as $entity_name => $labels) {
-      foreach ($labels as $label_name => $true) {
-        if ($label != $label_name) {
-          $aliases[] = array(
-            'group' => $group_name,
-            'title' => $label_name,
-            'help' => t('This is an alias of @group: @field.', array('@group' => $group_name, '@field' => $label)),
-          );
-        }
-        $also_known[] = t('@group: @field', array('@group' => $group_name, '@field' => $label_name));
-      }
-    }
-    if ($aliases) {
-      $data[$field_name]['aliases'] = $aliases;
-      $data[$field_name]['help'] .= ' ' . t('Also known as: !also.', array('!also' => implode(', ', $also_known)));
-    }
-
-    foreach ($field['columns'] as $column => $attributes) {
-      $allow_sort = TRUE;
-      $cast_to_int = FALSE;
-
-      // Identify likely filters and arguments for each column based on field type.
-      switch ($attributes['type']) {
-        case 'int':
-        case 'mediumint':
-        case 'tinyint':
-        case 'bigint':
-        case 'serial':
-          $cast_to_int = TRUE;
-        case 'numeric':
-        case 'float':
-          $filter = 'efq_views_handler_filter_field_numeric';
-          $argument = 'efq_views_handler_argument_field_numeric';
-          break;
-        case 'text':
-        case 'blob':
-          // It does not make sense to sort by blob or text.
-          $allow_sort = FALSE;
-        default:
-          $filter = 'efq_views_handler_filter_field_string';
-          $argument = 'efq_views_handler_argument_field_string';
-          break;
-      }
-      unset($definition);
-      switch ($field['module']) {
-        case 'list':
-          $filter = 'efq_views_handler_filter_field_list';
-          $definition = &$data[$field_name];
-          break;
-        case 'taxonomy':
-          $filter = 'efq_views_handler_filter_term_reference';
-          $argument = 'efq_views_handler_argument_field_numeric';
-          $cast_to_int = 1;
-          break;
-      }
-      $single_column = count($field['columns']) == 1;
-
-      if ($single_column && $column == 'value') {
-        $title = t('@label (!name)', array('@label' => $label, '!name' => $field_name));
-        // CCK used the first 10 characters of $label. Probably doesn't matter.
-        $title_short = $field_name;
-      }
-      else {
-        $title = t('@label (!name) - !column', array('@label' => $label, '!name' => $field_name, '!column' => $column));
-        $title_short = t('@label-truncated - !column', array('@label-truncated' => $field_name, '!column' => $column));
-      }
-      if ($single_column) {
-        $definition = &$data[$field_name];
-      }
-      if (!isset($definition)) {
-        // By setting only if necessary we avoid an empty
-        // $data[$field_name . '-' . $column] for lists.
-        // $data[$field_name][$column] doesn't work because $field_name is
-        // not a base table hence, this ugly thing.
-        $data[$field_name . '-' . $column] = array();
-        $definition = &$data[$field_name . '-' . $column];
-      }
-
-      $definition += array(
-        'group' => $group_name,
-        'title' => $title,
-        'title short' => $title_short,
-        'help' =>  t('Appears in: @bundles', array('@bundles' => implode(', ', $bundles_names))),
-        'argument' => array(
-          'field' => $column,
-          'handler' => $argument,
-          'field_name' => $field['field_name'],
-          'empty field name' => t('<No value>'),
-          'cast to int' => $cast_to_int,
-        ),
-        'filter' => array(
-          'field' => $column,
-          'handler' => $filter,
-          'field_name' => $field_name,
-          'allow empty' => TRUE,
-          'cast to int' => $cast_to_int,
-        ),
+    $views_data['filter'] = array(
+      'field' => $column,
+      'handler' => $filter,
+      'field_name' => $field_name,
+      'allow empty' => TRUE,
+      'cast to int' => $cast_to_int,
+    );
+    if (!empty($allow_sort)) {
+      $views_data['sort'] = array(
+        'field' => $column,
+        'handler' => 'efq_views_handler_sort_field',
+        'field_name' => $field_name,
       );
-      if (!empty($allow_sort)) {
-        $definition['sort'] = array(
-          'field' => $column,
-          'handler' => 'efq_views_handler_sort_field',
-          'field_name' => $field_name,
-        );
-      }
     }
   }
-
-  return $data;
 }
 
 /**
@@ -317,121 +251,66 @@ function _efq_views_get_field_data($entity_type, $info) {
  * @param $entity_type Entity type for which the properties are being loaded.
  * @param $info Entity info array for the given entity type.
  */
-function _efq_views_get_property_data($entity_type, $info, $entity_views_data) {
-  $data = array();
-  $metadata = entity_get_property_info($entity_type);
-  // No metadata available for this entity type.
-  if (!isset($metadata['properties'])) {
-    return $data;
+function _efq_views_get_property_handlers(&$views_data, $property, $metadata, $entity_info) {
+  if (!isset($metadata['properties'][$property])) {
+    return;
   }
+  $property_info = $metadata['properties'][$property];
+  // Avoid generating a million notices.
+  $property_info += array('type' => '');
+  $cast_to_int = FALSE;
+  $filter = '';
+  $argument = '';
 
-  // Provide additional help.
-  if (isset($info['schema_fields_sql']['base table'])) {
-    $types = array();
-    $available_properties = $info['schema_fields_sql']['base table'];
-    foreach ($available_properties as $key => $property) {
-      if (isset($metadata['properties'][$property])) {
-        $properties[$property] = $metadata['properties'][$property]['label'];
-      }
-      else {
-        $properties[$property] = $property;
-      }
-      if (isset($metadata['properties'][$property]['type'])) {
-        $types[$property] = $metadata['properties'][$property]['type'];
-      }
-    }
-    $data['property']['field']['available_properties'] = $properties;
-    $data['property']['filter']['available_properties'] = $properties;
-    $data['property']['sort']['available_properties'] = $properties;
-    $data['property']['argument']['available_properties'] = $properties;
-    // Store the datatype so that it can be used for casting values in handlers.
-    $data['property']['field']['types'] = $types;
-    $data['property']['filter']['types'] = $types;
-    $data['property']['sort']['types'] = $types;
-    $data['property']['argument']['types'] = $types;
-  }
-
-  // Get individual properties using Entity Metadata
-  foreach ($metadata['properties'] as $property => $property_info) {
-    // Avoid generating a million notices.
-    $property_info += array('type' => '');
-    $cast_to_int = FALSE;
-    $filter = '';
-    $argument = '';
-
-    // Identify likely handlers for each property, based on property type.
-    switch ($property_info['type']) {
-      case 'integer':
-        $cast_to_int = TRUE;
-        // Deliberate no break.
-      case 'decimal':
-      case 'duration':
-        $filter = 'efq_views_handler_filter_property_numeric';
-        $argument = 'efq_views_handler_argument_property_numeric';
-        break;
-      case 'boolean':
-        // Views proper doesn't let boolean fields have argument handlers,
-        // so we do not support that for properties. (Boolean field API
-        // fields are actually stored as an integer so that will work.)
-        $filter = 'efq_views_handler_filter_property_boolean';
-        $argument = NULL;
-        break;
-      case 'date':
-        $filter = 'efq_views_handler_filter_property_date';
-        $argument = NULL;
-        break;
-      case 'token':
-      case 'text':
-      case 'uri':
-        if (isset($property_info['options list'])) {
-          $filter = 'efq_views_handler_filter_property_in_operator';
-          $argument = 'efq_views_handler_argument_property_string';
-          break;
-        }
-        $filter = 'efq_views_handler_filter_property_string';
+  // Identify likely handlers for each property, based on property type.
+  switch ($property_info['type']) {
+    case 'integer':
+      $cast_to_int = TRUE;
+      // Deliberate no break.
+    case 'decimal':
+    case 'duration':
+      $filter = 'efq_views_handler_filter_property_numeric';
+      $argument = 'efq_views_handler_argument_property_numeric';
+      break;
+    case 'boolean':
+      // Views proper doesn't let boolean fields have argument handlers,
+      // so we do not support that for properties. (Boolean field API
+      // fields are actually stored as an integer so that will work.)
+      $filter = 'efq_views_handler_filter_property_boolean';
+      break;
+    case 'date':
+      $filter = 'efq_views_handler_filter_property_date';
+      break;
+    case 'token':
+    case 'text':
+    case 'uri':
+      if (isset($property_info['options list'])) {
+        $filter = 'efq_views_handler_filter_property_in_operator';
         $argument = 'efq_views_handler_argument_property_string';
         break;
-    }
-
-    $group_name = $info['label'];
-    // Override Node to Content.
-    if ($group_name == t('Node')) {
-      $group_name = t('Content');
-    }
-
-    $base_index = empty($property_info['entity views field']) ? 'entity_' . $entity_type : 'views_entity_'. $entity_type;
-    if (isset($entity_views_data[$base_index][$property]['field']) || $filter || $argument || in_array($property, $info['schema_fields_sql']['base table'])) {
-      $data[$property] = array(
-        'group' => $group_name,
-        'title' => $property_info['label'],
-      );
-      if (isset($property_info['description'])) {
-        $data[$property]['help'] = $property_info['description'];
       }
-      if (isset($entity_views_data[$base_index][$property]['field'])) {
-        $data[$property]['field'] = $entity_views_data[$base_index][$property]['field'];
-      }
-      if ($filter) {
-        $data[$property]['filter'] = array(
-          'handler' => $filter,
-          'options callback' => isset($property_info['options list']) ? $property_info['options list'] : NULL,
-          'cast to int' => $cast_to_int,
-        );
-      }
-      if ($argument) {
-        $data[$property]['argument'] = array(
-          'handler' => $argument,
-          'cast to int' => $cast_to_int,
-        );
-      }
-      // This property is a db column, we can sort it.
-      if (in_array($property, $info['schema_fields_sql']['base table'])) {
-        $data[$property]['sort']['handler'] = 'efq_views_handler_sort_property';
-      }
-    }
+      $filter = 'efq_views_handler_filter_property_string';
+      $argument = 'efq_views_handler_argument_property_string';
+      break;
   }
 
-  return $data;
+  if ($filter) {
+    $views_data['filter'] = array(
+      'handler' => $filter,
+      'options callback' => isset($property_info['options list']) ? $property_info['options list'] : NULL,
+      'cast to int' => $cast_to_int,
+    );
+  }
+  if ($argument) {
+    $views_data['argument'] = array(
+      'handler' => $argument,
+      'cast to int' => $cast_to_int,
+    );
+  }
+  // This property is a db column, we can sort it.
+  if (in_array($property, $entity_info['schema_fields_sql']['base table'])) {
+    $views_data['sort']['handler'] = 'efq_views_handler_sort_property';
+  }
 }
 
 /**
