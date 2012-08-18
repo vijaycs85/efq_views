@@ -187,7 +187,6 @@ function _efq_views_get_field_handlers(&$views_data, $field_name) {
   }
   foreach ($field['columns'] as $column => $attributes) {
     $allow_sort = TRUE;
-    $cast_to_int = FALSE;
 
     // Identify likely filters and arguments for each column based on field type.
     switch ($attributes['type']) {
@@ -196,7 +195,6 @@ function _efq_views_get_field_handlers(&$views_data, $field_name) {
       case 'tinyint':
       case 'bigint':
       case 'serial':
-        $cast_to_int = TRUE;
       case 'numeric':
       case 'float':
         $filter = 'efq_views_handler_filter_field_numeric';
@@ -218,7 +216,6 @@ function _efq_views_get_field_handlers(&$views_data, $field_name) {
       case 'taxonomy':
         $filter = 'efq_views_handler_filter_term_reference';
         $argument = 'efq_views_handler_argument_field_numeric';
-        $cast_to_int = 1;
         break;
     }
     $views_data['argument'] = array(
@@ -226,14 +223,12 @@ function _efq_views_get_field_handlers(&$views_data, $field_name) {
       'handler' => $argument,
       'field_name' => $field['field_name'],
       'empty field name' => t('<No value>'),
-      'cast to int' => $cast_to_int,
     );
     $views_data['filter'] = array(
       'field' => $column,
       'handler' => $filter,
       'field_name' => $field_name,
       'allow empty' => TRUE,
-      'cast to int' => $cast_to_int,
     );
     $views_data['field']['click sortable'] = $allow_sort;
     if (!empty($allow_sort)) {
@@ -260,15 +255,12 @@ function _efq_views_get_property_handlers(&$views_data, $property, $metadata, $e
   $property_info = $metadata['properties'][$property];
   // Avoid generating a million notices.
   $property_info += array('type' => '');
-  $cast_to_int = FALSE;
   $filter = '';
   $argument = '';
 
   // Identify likely handlers for each property, based on property type.
   switch ($property_info['type']) {
     case 'integer':
-      $cast_to_int = TRUE;
-      // Deliberate no break.
     case 'decimal':
     case 'duration':
       $filter = 'efq_views_handler_filter_property_numeric';
@@ -300,13 +292,11 @@ function _efq_views_get_property_handlers(&$views_data, $property, $metadata, $e
     $views_data['filter'] = array(
       'handler' => $filter,
       'options callback' => isset($property_info['options list']) ? $property_info['options list'] : NULL,
-      'cast to int' => $cast_to_int,
     );
   }
   if ($argument) {
     $views_data['argument'] = array(
       'handler' => $argument,
-      'cast to int' => $cast_to_int,
     );
   }
   // This property is a db column, we can sort it.
@@ -366,12 +356,6 @@ function efq_views_views_plugins_alter(&$plugins) {
  * @return
  *   Same as $value, casted to int if necessary.
  */
-function efq_views_op_prepare($handler, $value, &$delta = NULL) {
-  if (isset($handler->options['delta']) && is_numeric($handler->options['delta'])) {
-    $delta = (int) $handler->options['delta'];
-  }
-  if (!empty($handler->definition['cast to int'])) {
-    $value = is_array($value) ? array_map('intval', $value) : (int) $value;
-  }
-  return $value;
+function efq_views_extract_delta($handler) {
+  return isset($handler->options['delta']) && is_numeric($handler->options['delta']) ? $handler->options['delta'] : NULL;
 }

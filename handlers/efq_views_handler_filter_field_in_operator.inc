@@ -28,7 +28,6 @@ class efq_views_handler_filter_field_in_operator extends efq_views_handler_filte
     }
     // We use array_values() because the checkboxes keep keys and that can cause
     // array addition problems.
-    $values = efq_views_op_prepare($this, array_values($this->value), $delta);
-    $this->query->query->fieldCondition($this->definition['field_name'], $this->real_field, $values, $this->operator, $delta);
+    $this->query->query->fieldCondition($this->definition['field_name'], $this->real_field, array_values($this->value), $this->operator, efq_views_extract_delta($this));
   }
 }

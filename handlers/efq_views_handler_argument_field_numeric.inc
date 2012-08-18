@@ -15,12 +15,12 @@ class efq_views_handler_argument_field_numeric extends views_handler_argument_nu
 
     if (count($this->value) > 1 && $this->operator == 'or') {
       $operator = empty($this->options['not']) ? 'IN' : 'NOT IN';
-      $this->query->query->fieldCondition($this->definition['field_name'], $this->real_field, efq_views_op_prepare($this, $this->value), $operator);
+      $this->query->query->fieldCondition($this->definition['field_name'], $this->real_field, $this->value, $operator);
     }
     else {
       $operator = empty($this->options['not']) ? '=' : '<>';
       foreach ($this->value as $value) {
-        $this->query->query->fieldCondition($this->definition['field_name'], $this->real_field, efq_views_op_prepare($this, $value), $operator);
+        $this->query->query->fieldCondition($this->definition['field_name'], $this->real_field, $value, $operator);
       }
     }
   }
