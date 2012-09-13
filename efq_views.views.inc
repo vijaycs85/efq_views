@@ -267,6 +267,7 @@ function _efq_views_get_property_handlers(&$views_data, $property, $metadata, $e
     case 'decimal':
     case 'duration':
       $filter = 'efq_views_handler_filter_property_numeric';
+    case 'taxonomy_vocabulary':
       $argument = 'efq_views_handler_argument_property_numeric';
       break;
     case 'boolean':
