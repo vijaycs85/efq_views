@@ -180,7 +180,10 @@ function _efq_views_get_field_handlers(&$views_data, $field_name) {
   if (isset($views_data['real field'])) {
     list($field_name, $column) = explode(':', $views_data['real field']);
   }
-  $field = field_info_field($field_name);
+  // Something bogus.
+  if (!$field = field_info_field($field_name)) {
+    return;
+  }
   // This will be handled later when a real field props up.
   if (count($field['columns']) > 1 && !$column) {
     return;
