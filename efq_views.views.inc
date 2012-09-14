@@ -4,6 +4,7 @@
  * Implements hook_views_data().
  */
 function efq_views_views_data() {
+  $data = array();
   $entity_info = entity_get_info();
   foreach (entity_views_data() as $key => $entity_data) {
     if ($key == 'entity__global') {
@@ -13,7 +14,7 @@ function efq_views_views_data() {
       $metadata = entity_get_property_info($entity_type);
       $fields = array();
       // Collect the fields.
-      foreach (field_info_instances($entity_type) as $bundle => $field_data) {
+      foreach (field_info_instances($entity_type) as $field_data) {
         $fields += array_flip(array_keys($field_data));
       }
       $info = $entity_info[$entity_type];
@@ -39,13 +40,21 @@ function efq_views_views_data() {
   return $data;
 }
 
+/**
+ * @param array $data
+ * @param string $entity_type
+ * @param string $key
+ * @param array $entity_data
+ *
+ * @return bool
+ */
 function _efq_views_copy_data(&$data, &$entity_type, $key, $entity_data) {
+  $return = FALSE;
   if (substr($key, 0, 7) == 'entity_') {
     $return = TRUE;
     $entity_type = substr($key, 7);
   }
   elseif (substr($key, 0, 13) == 'views_entity_') {
-    $return = FALSE;
     $entity_type = substr($key, 13);
   }
   if (!isset($data['efq_' . $entity_type])) {
@@ -60,8 +69,8 @@ function _efq_views_copy_data(&$data, &$entity_type, $key, $entity_data) {
  * Returns all possible entity metadata variants
  * (entity_id, revision_id, entity_type, bundle).
  *
- * @param $entity_type The selected entity type, if any.
- * @param $info Entity info array.
+ * @param string $entity_type The selected entity type, if any.
+ * @param array $info Entity info array.
  */
 function _efq_views_get_entity_data($entity_type, $info) {
   $data['entity_id'] = array(
