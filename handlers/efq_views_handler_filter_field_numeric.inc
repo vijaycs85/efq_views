@@ -23,10 +23,10 @@ class efq_views_handler_filter_field_numeric extends efq_views_handler_filter_nu
   }
 
   function op_simple($column) {
-    $this->query->query->fieldCondition($this->definition['field_name'], $column, $value, $this->operator, efq_views_extract_delta($this));
+    $this->query->query->fieldCondition($this->definition['field_name'], $column, $this->value['value'], $this->operator, efq_views_extract_delta($this));
   }
 
   function op_between($column) {
-    $this->query->query->fieldCondition($this->definition['field_name'], $column, $value, "BETWEEN", efq_views_extract_delta($this));
+    $this->query->query->fieldCondition($this->definition['field_name'], $column, $this->value['value'], "BETWEEN", efq_views_extract_delta($this));
   }
 }
