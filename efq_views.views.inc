@@ -24,7 +24,11 @@ function efq_views_views_data() {
           _efq_views_get_field_handlers($views_data, $index);
         }
         else {
-          _efq_views_get_property_handlers($views_data, $index, $metadata, $info);
+          $move = _efq_views_get_property_handlers($views_data, $index, $metadata, $info);
+          if ($move) {
+            $data['efq_' . $entity_type][$move] = $views_data;
+            unset($data['efq_' . $entity_type][$index]);
+          }
         }
       }
       $data['efq_' . $entity_type]['table']['entity type'] = $entity_type;
@@ -261,6 +265,7 @@ function _efq_views_get_field_handlers(&$views_data, $field_name) {
  * @param $info Entity info array for the given entity type.
  */
 function _efq_views_get_property_handlers(&$views_data, $property, $metadata, $entity_info) {
+  $move = FALSE;
   if (!isset($metadata['properties'][$property])) {
     return;
   }
@@ -299,6 +304,7 @@ function _efq_views_get_property_handlers(&$views_data, $property, $metadata, $e
       $argument = 'efq_views_handler_argument_property_string';
       break;
     case 'taxonomy_vocabulary':
+      $move = 'vid';
       $filter = 'efq_views_handler_filter_property_taxonomy_vocabulary';
       $argument = 'efq_views_handler_argument_property_numeric';
   }
@@ -322,6 +328,7 @@ function _efq_views_get_property_handlers(&$views_data, $property, $metadata, $e
   else {
     $views_data['field']['click sortable'] = FALSE;
   }
+  return $move;
 }
 
 /**

@@ -6,7 +6,7 @@ class efq_views_handler_filter_property_taxonomy_vocabulary extends efq_views_ha
     $vocabularies = taxonomy_get_vocabularies();
     $options = array();
     foreach ($vocabularies as $vocabulary) {
-      $options[$vocabulary->machine_name] = check_plain($vocabulary->name);
+      $options[$vocabulary->vid] = check_plain($vocabulary->name);
     }
     $this->value_options = $options;
     return $options;
