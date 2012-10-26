@@ -220,6 +220,10 @@ function _efq_views_get_field_handlers(&$views_data, $field_name) {
       case 'blob':
         // It does not make sense to sort by blob or text.
         $allow_sort = FALSE;
+      case 'date':
+        $filter = 'efq_views_handler_filter_field_date';
+        $argument = 'efq_views_handler_argument_field_numeric';
+        break;
       default:
         $filter = 'efq_views_handler_filter_field_string';
         $argument = 'efq_views_handler_argument_field_string';

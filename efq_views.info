@@ -33,11 +33,13 @@ files[] = handlers/efq_views_handler_sort_property.inc
 files[] = handlers/efq_views_handler_filter_field_in_operator.inc
 files[] = handlers/efq_views_handler_filter_field_numeric.inc
 files[] = handlers/efq_views_handler_filter_field_string.inc
+files[] = handlers/efq_views_handler_filter_field_date.inc
 files[] = handlers/efq_views_handler_sort_field.inc
 files[] = handlers/efq_views_handler_argument_field_numeric.inc
 files[] = handlers/efq_views_handler_argument_field_string.inc
 
 files[] = handlers/efq_views_handler_filter_field_list.inc
+files[] = handlers/efq_views_handler_filter_date.inc
 files[] = handlers/efq_views_handler_filter_in_operator.inc
 files[] = handlers/efq_views_handler_filter_numeric.inc
 files[] = handlers/efq_views_handler_filter_string.inc
