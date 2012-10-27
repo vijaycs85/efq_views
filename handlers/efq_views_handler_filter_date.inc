@@ -30,7 +30,11 @@ class efq_views_handler_filter_date extends views_handler_filter_date {
   }
 
   function op_simple($field) {
-    return strtotime($this->value['value'], 0);
+    $value = strtotime($this->value['value'], 0);
+    if ($value < 100000) {
+      $value += time();
+    }
+    return $value;
   }
 
 }
