@@ -197,66 +197,72 @@ function _efq_views_get_field_handlers(&$views_data, $field_name) {
   if (!$field = field_info_field($field_name)) {
     return;
   }
-  // This will be handled later when a real field props up.
-  if (count($field['columns']) > 1 && !$column) {
+  if (!$column) {
+    // This will be handled later when a real field props up.
+    if (count($field['columns']) > 1) {
+      return;
+    }
+    $columns = array_keys($field['columns']);
+    $column = reset($columns);
+  }
+  if (!isset($field['columns'][$column])) {
+    // Computed field.
     return;
   }
-  foreach ($field['columns'] as $column => $attributes) {
-    $allow_sort = TRUE;
+  $allow_sort = TRUE;
 
-    // Identify likely filters and arguments for each column based on field type.
-    switch ($attributes['type']) {
-      case 'int':
-      case 'mediumint':
-      case 'tinyint':
-      case 'bigint':
-      case 'serial':
-      case 'numeric':
-      case 'float':
-        $filter = 'efq_views_handler_filter_field_numeric';
-        $argument = 'efq_views_handler_argument_field_numeric';
-        break;
-      case 'text':
-      case 'blob':
-        // It does not make sense to sort by blob or text.
-        $allow_sort = FALSE;
-      default:
-        $filter = 'efq_views_handler_filter_field_string';
-        $argument = 'efq_views_handler_argument_field_string';
-        break;
-    }
-    switch ($field['module']) {
-      case 'date':
-        $filter = 'efq_views_handler_filter_field_date';
-        break;
-      case 'list':
-        $filter = 'efq_views_handler_filter_field_list';
-        break;
-      case 'taxonomy':
-        $filter = 'efq_views_handler_filter_term_reference';
-        $argument = 'efq_views_handler_argument_field_numeric';
-        break;
-    }
-    $views_data['argument'] = array(
+  // Identify likely filters and arguments for each column based on field type.
+  switch ($field['columns'][$column]['type']) {
+    case 'int':
+    case 'mediumint':
+    case 'tinyint':
+    case 'bigint':
+    case 'serial':
+    case 'numeric':
+    case 'float':
+      $filter = 'efq_views_handler_filter_field_numeric';
+      $argument = 'efq_views_handler_argument_field_numeric';
+      break;
+    case 'text':
+    case 'blob':
+      // It does not make sense to sort by blob or text.
+      $allow_sort = FALSE;
+    default:
+      $filter = 'efq_views_handler_filter_field_string';
+      $argument = 'efq_views_handler_argument_field_string';
+      break;
+  }
+  switch ($field['module']) {
+    case 'date':
+      $filter = 'efq_views_handler_filter_field_date';
+      break;
+    case 'list':
+      $filter = 'efq_views_handler_filter_field_list';
+      break;
+    case 'taxonomy':
+      $filter = 'efq_views_handler_filter_term_reference';
+      $argument = 'efq_views_handler_argument_field_numeric';
+      break;
+  }
+  $views_data['argument'] = array(
+    'field' => $column,
+    'handler' => $argument,
+    'field_name' => $field['field_name'],
+    'empty field name' => t('<No value>'),
+  );
+  $views_data['filter'] = array(
+    'field' => $column,
+    'handler' => $filter,
+    'field_name' => $field_name,
+    'allow empty' => TRUE,
+  );
+  $views_data['field']['click sortable'] = $allow_sort;
+  if (!empty($allow_sort)) {
+    $views_data['sort'] = array(
       'field' => $column,
-      'handler' => $argument,
-      'field_name' => $field['field_name'],
-      'empty field name' => t('<No value>'),
-    );
-    $views_data['filter'] = array(
-      'field' => $column,
-      'handler' => $filter,
+      'handler' => 'efq_views_handler_sort_field',
       'field_name' => $field_name,
-      'allow empty' => TRUE,
     );
-    $views_data['field']['click sortable'] = $allow_sort;
-    if (!empty($allow_sort)) {
-      $views_data['sort'] = array(
-        'field' => $column,
-        'handler' => 'efq_views_handler_sort_field',
-        'field_name' => $field_name,
-      );
-    }
   }
 }
 
