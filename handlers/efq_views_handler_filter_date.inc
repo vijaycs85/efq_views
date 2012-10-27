@@ -19,22 +19,18 @@ class efq_views_handler_filter_date extends views_handler_filter_date {
 
   function op_between($field) {
     if ($this->operator == 'between') {
-      $a = strtotime($this->value['min'], 0);
-      $b = strtotime($this->value['max'], 0);
+      $a = strtotime($this->value['min']);
+      $b = strtotime($this->value['max']);
     }
     else {
-      $a = strtotime($this->value['max'], 0);
-      $b = strtotime($this->value['min'], 0);
+      $a = strtotime($this->value['max']);
+      $b = strtotime($this->value['min']);
     }
     return array($a, $b);
   }
 
   function op_simple($field) {
-    $value = strtotime($this->value['value'], 0);
-    if ($value < 100000) {
-      $value += time();
-    }
-    return $value;
+    return strtotime($this->value['value']);
   }
 
 }
