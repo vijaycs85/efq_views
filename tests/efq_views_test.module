@@ -90,3 +90,14 @@ class EFQViewsTestEntityClass extends Entity {
     return array('path' => 'custom/' . $this->identifier());
   }
 }
+
+/**
+ * Implements hook_query_TAG_alter().
+ *
+ * @see EFQViewsQueryTagsTestCase
+ */
+function efq_views_test_query_test_query_tag_alter($query) {
+  global $efq_test_query;
+
+  $efq_test_query = $query;
+}

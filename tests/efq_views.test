@@ -634,3 +634,29 @@ class EFQViewsNodeLinkTestCase extends EFQViewsTestBase {
     $this->assertFieldByName('title', $node->title);
   }
 }
+
+class EFQViewsQueryTagsTestCase extends EFQViewsTestBase {
+  static function getInfo() {
+    return array(
+      'name' => 'EFQ Views query tags',
+      'description' => 'Tests adding tags to EFQ Views queries.',
+      'group' => 'EFQ Views',
+    );
+  }
+
+  function view() {
+    $view = parent::view();
+    $handler = $view->display['default'];
+    $handler->display_options['query']['options']['query_tags'] = array('test_query_tag');
+    return $view;
+  }
+
+  function testQueryTags() {
+    global $efq_test_query;
+    $this->runView();
+    // The query is present in the global variable when the query tag
+    // was inserted correctly.
+    // @see efq_views_test_query_test_query_tag_alter().
+    $this->assertNotNull($efq_test_query, 'The query must be present in the global variable');
+  }
+}

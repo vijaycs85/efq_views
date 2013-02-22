@@ -32,6 +32,9 @@ class efq_views_plugin_query extends views_plugin_query {
     $options['field_language'] = array(
       'default' => '***CURRENT_LANGUAGE***',
     );
+    $options['query_tags'] = array(
+      'default' => array(),
+    );
     return $options;
   }
 
@@ -73,6 +76,27 @@ class efq_views_plugin_query extends views_plugin_query {
         '#default_value' => $this->options['field_language'],
       );
     }
+
+    $form['query_tags'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Query Tags'),
+      '#description' => t('If set, these tags will be appended to the query and can be used to identify the query in a module. This can be helpful for altering queries.'),
+      '#default_value' => implode(', ', $this->options['query_tags']),
+      '#element_validate' => array('views_element_validate_tags'),
+    );
+
+    // The function views_element_validate_tags() is defined here.
+    form_load_include($form_state, 'inc', 'views', 'plugins/views_plugin_query_default');
+  }
+
+  /**
+   * Special submit handling.
+   */
+  function options_submit(&$form, &$form_state) {
+    $element = array('#parents' => array('query', 'options', 'query_tags'));
+    $value = explode(',', drupal_array_get_nested_value($form_state['values'], $element['#parents']));
+    $value = array_filter(array_map('trim', $value));
+    form_set_value($element, $value, $form_state);
   }
 
   /**
@@ -119,6 +143,14 @@ class efq_views_plugin_query extends views_plugin_query {
 
     $query->addMetaData('view', $view);
     $count_query->addMetaData('view', $view);
+
+    // Add the query tags.
+    if (!empty($this->options['query_tags'])) {
+      foreach ($this->options['query_tags'] as $tag) {
+        $query->addTag($tag);
+        $count_query->addTag($tag);
+      }
+    }
 
     $start = microtime(true);
 
