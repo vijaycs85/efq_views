@@ -279,6 +279,12 @@ function _efq_views_get_property_handlers(&$views_data, $property, $metadata, $e
     return;
   }
   $property_info = $metadata['properties'][$property];
+
+  // Check whether this field is queryable.
+  if (empty($property_info['schema field']) && empty($property_info['query callback']) && !empty($property_info['queryable'])) {
+    return $move;
+  }
+
   // Avoid generating a million notices.
   $property_info += array('type' => '');
   $filter = '';
@@ -329,14 +335,10 @@ function _efq_views_get_property_handlers(&$views_data, $property, $metadata, $e
       'handler' => $argument,
     );
   }
-  // This property is a db column, we can sort it.
-  if (in_array($property, $entity_info['schema_fields_sql']['base table'])) {
-    $views_data['field']['click sortable'] = TRUE;
-    $views_data['sort']['handler'] = 'efq_views_handler_sort_property';
-  }
-  else {
-    $views_data['field']['click sortable'] = FALSE;
-  }
+  // Assume a queryable property is sortable also.
+  $views_data['field']['click sortable'] = TRUE;
+  $views_data['sort']['handler'] = 'efq_views_handler_sort_property';
+
   return $move;
 }
 
