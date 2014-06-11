@@ -339,6 +339,44 @@ function _efq_views_get_property_handlers(&$views_data, $property, $metadata, $e
   $views_data['field']['click sortable'] = TRUE;
   $views_data['sort']['handler'] = 'efq_views_handler_sort_property';
 
+  // To add support for custom handlers, we need to know if the property is
+  // local or remote.  In the latter case, the property info is stored elsewhere.
+  if (isset($property_info['remote_property'])) {
+    $property_info = $metadata['properties']['entity_data']['property info'][$property];
+  }
+
+  // Add additional or different custom handlers which are specified by the
+  // entity metadata.
+  if (isset($property_info['views'])) {
+    $views_data = array(
+      'group' => $entity_info['label'],
+      'title' => $property_info['label'],
+      'help' =>  $property_info['description'],
+    );
+
+    // Add the field handler if it's set.
+    if (isset($property_info['views']['field'])) {
+      $views_data['field'] = array(
+        'click sortable' => FALSE,
+        'handler' => $property_info['views']['field'],
+      );
+    }
+
+    // Add the filter handler if it's set.
+    if (isset($property_info['views']['filter'])) {
+      $views_data['filter'] = array(
+        'handler' => $property_info['views']['filter'],
+      );
+    }
+
+    // Add the sort handler if it's set.
+    if (isset($property_info['views']['sort'])) {
+      $views_data['sort'] = array(
+        'handler' => $property_info['views']['sort'],
+      );
+    }
+  }
+
   return $move;
 }
 
