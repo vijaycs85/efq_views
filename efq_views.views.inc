@@ -39,6 +39,20 @@ function efq_views_views_data() {
         'field' => $info['entity keys']['id'],
       );
       $data['efq_' . $entity_type] += _efq_views_get_entity_data($entity_type, $info);
+
+      // Add optional support for Views Bulk Operations.
+      if (module_exists('views_bulk_operations')) {
+        $data['efq_' . $entity_type]['views_bulk_operations'] = array(
+          'title' => $data['efq_' . $entity_type]['table']['base']['title'],
+          'group' => t('Bulk operations'),
+          'help' => t('Provide a checkbox to select the row for bulk operations.'),
+          'real field' => $entity_info[$entity_type]['entity keys']['id'],
+          'field' => array(
+            'handler' => 'efq_views_handler_field_operations',
+            'click sortable' => FALSE,
+          ),
+        );
+      }
     }
   }
   return $data;
