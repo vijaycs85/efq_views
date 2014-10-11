@@ -1,0 +1,9 @@
+name: 'Entity Field Query Views Backend'
+description: 'Enables Views to use EntityFieldQuery as the query backend.'
+package: Views
+core: 8.x
+dependencies:
+  - views
+  - entity
+
+

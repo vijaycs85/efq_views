@@ -35,7 +35,7 @@ function efq_views_views_data() {
       $data['efq_' . $entity_type]['table']['base'] = array(
         'title' => 'EntityFieldQuery: ' . $info['label'],
         'help' => t('Uses EntityFieldQuery for querying the !type entity type', array('!type' => $entity_type)),
-        'query class' => 'efq_query',
+        'query_id' => 'entity_field_query',
         'field' => $info['entity keys']['id'],
       );
       $data['efq_' . $entity_type] += _efq_views_get_entity_data($entity_type, $info);
